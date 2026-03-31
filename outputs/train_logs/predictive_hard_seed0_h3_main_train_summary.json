@@ -1,0 +1,32 @@
+{
+  "run_name": "predictive_hard_seed0_h3_main",
+  "summary_type": "training",
+  "created_at_utc": "2026-03-27T16:05:04+00:00",
+  "checkpoint": "checkpoints\\predictive_hard_seed0_h3_main.pt",
+  "history_path": "outputs\\train_logs\\predictive_hard_seed0_h3_main_train_history.csv",
+  "logs": {
+    "aux_loss": 0.03511980548501015,
+    "loss": 0.2556767165660858,
+    "policy_loss": -0.0008736401796340942,
+    "value_loss": 0.525079071521759,
+    "entropy": 0.5989174246788025,
+    "episode_return": -11.940000000000003
+  },
+  "metadata": {
+    "run_group": "main",
+    "report_section": "main_results",
+    "device": "cuda",
+    "checkpoint_path": "checkpoints\\predictive_hard_seed0_h3_main.pt",
+    "history_path": "outputs\\train_logs\\predictive_hard_seed0_h3_main_train_history.csv"
+  },
+  "config": {
+    "model": "predictive",
+    "difficulty": "hard",
+    "seed": 0,
+    "total_timesteps": 100000,
+    "model_kwargs": {
+      "horizon": 3,
+      "aux_coef": 0.2
+    }
+  }
+}

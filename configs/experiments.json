@@ -1,0 +1,265 @@
+{
+  "notes": "Formal experiment matrix for the final two-week project push.",
+  "eval_suite": "configs/eval_suite.json",
+  "output_layout": {
+    "checkpoints": "checkpoints",
+    "training_logs": "outputs/train_logs",
+    "evaluation_outputs": "outputs/eval",
+    "qualitative_outputs": "outputs/qualitative",
+    "report_assets": "outputs/report_assets",
+    "figures": "outputs/figures"
+  },
+  "runs": [
+    {
+      "run_name": "oracle_all_seed0",
+      "kind": "eval_only",
+      "group": "main",
+      "report_section": "main_results",
+      "model": "oracle",
+      "difficulty": "all",
+      "seed": 0,
+      "expected_outputs": [
+        "outputs/eval/oracle_all_seed0_summary.json",
+        "outputs/eval/oracle_all_seed0_easy_episodes.csv",
+        "outputs/eval/oracle_all_seed0_medium_episodes.csv",
+        "outputs/eval/oracle_all_seed0_hard_episodes.csv"
+      ]
+    },
+    {
+      "run_name": "mlp_easy_seed0_main",
+      "kind": "train_eval",
+      "group": "main",
+      "report_section": "main_results",
+      "model": "mlp",
+      "difficulty": "easy",
+      "seed": 0,
+      "total_timesteps": 30000,
+      "expected_outputs": [
+        "checkpoints/mlp_easy_seed0_main.pt",
+        "outputs/train_logs/mlp_easy_seed0_main_train_summary.json",
+        "outputs/eval/mlp_easy_seed0_main_summary.json",
+        "outputs/eval/mlp_easy_seed0_main_easy_episodes.csv"
+      ]
+    },
+    {
+      "run_name": "mlp_medium_seed0_main",
+      "kind": "train_eval",
+      "group": "main",
+      "report_section": "main_results",
+      "model": "mlp",
+      "difficulty": "medium",
+      "seed": 0,
+      "total_timesteps": 50000,
+      "expected_outputs": [
+        "checkpoints/mlp_medium_seed0_main.pt",
+        "outputs/train_logs/mlp_medium_seed0_main_train_summary.json",
+        "outputs/eval/mlp_medium_seed0_main_summary.json",
+        "outputs/eval/mlp_medium_seed0_main_medium_episodes.csv"
+      ]
+    },
+    {
+      "run_name": "mlp_hard_seed0_main",
+      "kind": "train_eval",
+      "group": "main",
+      "report_section": "main_results",
+      "model": "mlp",
+      "difficulty": "hard",
+      "seed": 0,
+      "total_timesteps": 70000,
+      "expected_outputs": [
+        "checkpoints/mlp_hard_seed0_main.pt",
+        "outputs/train_logs/mlp_hard_seed0_main_train_summary.json",
+        "outputs/eval/mlp_hard_seed0_main_summary.json",
+        "outputs/eval/mlp_hard_seed0_main_hard_episodes.csv"
+      ]
+    },
+    {
+      "run_name": "gnn_easy_seed0_main",
+      "kind": "train_eval",
+      "group": "main",
+      "report_section": "main_results",
+      "model": "gnn",
+      "difficulty": "easy",
+      "seed": 0,
+      "total_timesteps": 40000,
+      "expected_outputs": [
+        "checkpoints/gnn_easy_seed0_main.pt",
+        "outputs/train_logs/gnn_easy_seed0_main_train_summary.json",
+        "outputs/eval/gnn_easy_seed0_main_summary.json",
+        "outputs/eval/gnn_easy_seed0_main_easy_episodes.csv"
+      ]
+    },
+    {
+      "run_name": "gnn_medium_seed0_main",
+      "kind": "train_eval",
+      "group": "main",
+      "report_section": "main_results",
+      "model": "gnn",
+      "difficulty": "medium",
+      "seed": 0,
+      "total_timesteps": 60000,
+      "expected_outputs": [
+        "checkpoints/gnn_medium_seed0_main.pt",
+        "outputs/train_logs/gnn_medium_seed0_main_train_summary.json",
+        "outputs/eval/gnn_medium_seed0_main_summary.json",
+        "outputs/eval/gnn_medium_seed0_main_medium_episodes.csv"
+      ]
+    },
+    {
+      "run_name": "gnn_hard_seed0_main",
+      "kind": "train_eval",
+      "group": "main",
+      "report_section": "main_results",
+      "model": "gnn",
+      "difficulty": "hard",
+      "seed": 0,
+      "total_timesteps": 80000,
+      "expected_outputs": [
+        "checkpoints/gnn_hard_seed0_main.pt",
+        "outputs/train_logs/gnn_hard_seed0_main_train_summary.json",
+        "outputs/eval/gnn_hard_seed0_main_summary.json",
+        "outputs/eval/gnn_hard_seed0_main_hard_episodes.csv"
+      ]
+    },
+    {
+      "run_name": "predictive_easy_seed0_h3_main",
+      "kind": "train_eval",
+      "group": "main",
+      "report_section": "main_results",
+      "model": "predictive",
+      "difficulty": "easy",
+      "seed": 0,
+      "total_timesteps": 50000,
+      "model_kwargs": {
+        "horizon": 3,
+        "aux_coef": 0.2
+      },
+      "expected_outputs": [
+        "checkpoints/predictive_easy_seed0_h3_main.pt",
+        "outputs/train_logs/predictive_easy_seed0_h3_main_train_summary.json",
+        "outputs/eval/predictive_easy_seed0_h3_main_summary.json",
+        "outputs/eval/predictive_easy_seed0_h3_main_easy_episodes.csv"
+      ]
+    },
+    {
+      "run_name": "predictive_medium_seed0_h3_main",
+      "kind": "train_eval",
+      "group": "main",
+      "report_section": "main_results",
+      "model": "predictive",
+      "difficulty": "medium",
+      "seed": 0,
+      "total_timesteps": 80000,
+      "model_kwargs": {
+        "horizon": 3,
+        "aux_coef": 0.2
+      },
+      "expected_outputs": [
+        "checkpoints/predictive_medium_seed0_h3_main.pt",
+        "outputs/train_logs/predictive_medium_seed0_h3_main_train_summary.json",
+        "outputs/eval/predictive_medium_seed0_h3_main_summary.json",
+        "outputs/eval/predictive_medium_seed0_h3_main_medium_episodes.csv"
+      ]
+    },
+    {
+      "run_name": "predictive_hard_seed0_h3_main",
+      "kind": "train_eval",
+      "group": "main",
+      "report_section": "main_results",
+      "model": "predictive",
+      "difficulty": "hard",
+      "seed": 0,
+      "total_timesteps": 100000,
+      "model_kwargs": {
+        "horizon": 3,
+        "aux_coef": 0.2
+      },
+      "expected_outputs": [
+        "checkpoints/predictive_hard_seed0_h3_main.pt",
+        "outputs/train_logs/predictive_hard_seed0_h3_main_train_summary.json",
+        "outputs/eval/predictive_hard_seed0_h3_main_summary.json",
+        "outputs/eval/predictive_hard_seed0_h3_main_hard_episodes.csv"
+      ]
+    },
+    {
+      "run_name": "predictive_medium_seed0_h1_ablation",
+      "kind": "train_eval",
+      "group": "ablation",
+      "report_section": "ablation",
+      "model": "predictive",
+      "difficulty": "medium",
+      "seed": 0,
+      "total_timesteps": 80000,
+      "model_kwargs": {
+        "horizon": 1,
+        "aux_coef": 0.2
+      },
+      "expected_outputs": [
+        "checkpoints/predictive_medium_seed0_h1_ablation.pt",
+        "outputs/train_logs/predictive_medium_seed0_h1_ablation_train_summary.json",
+        "outputs/eval/predictive_medium_seed0_h1_ablation_summary.json",
+        "outputs/eval/predictive_medium_seed0_h1_ablation_medium_episodes.csv"
+      ]
+    },
+    {
+      "run_name": "predictive_hard_seed0_h1_ablation",
+      "kind": "train_eval",
+      "group": "ablation",
+      "report_section": "ablation",
+      "model": "predictive",
+      "difficulty": "hard",
+      "seed": 0,
+      "total_timesteps": 100000,
+      "model_kwargs": {
+        "horizon": 1,
+        "aux_coef": 0.2
+      },
+      "expected_outputs": [
+        "checkpoints/predictive_hard_seed0_h1_ablation.pt",
+        "outputs/train_logs/predictive_hard_seed0_h1_ablation_train_summary.json",
+        "outputs/eval/predictive_hard_seed0_h1_ablation_summary.json",
+        "outputs/eval/predictive_hard_seed0_h1_ablation_hard_episodes.csv"
+      ]
+    },
+    {
+      "run_name": "predictive_hard_seed1_h3_stability",
+      "kind": "train_eval",
+      "group": "stability",
+      "report_section": "stability",
+      "model": "predictive",
+      "difficulty": "hard",
+      "seed": 1,
+      "total_timesteps": 100000,
+      "model_kwargs": {
+        "horizon": 3,
+        "aux_coef": 0.2
+      },
+      "expected_outputs": [
+        "checkpoints/predictive_hard_seed1_h3_stability.pt",
+        "outputs/train_logs/predictive_hard_seed1_h3_stability_train_summary.json",
+        "outputs/eval/predictive_hard_seed1_h3_stability_summary.json",
+        "outputs/eval/predictive_hard_seed1_h3_stability_hard_episodes.csv"
+      ]
+    },
+    {
+      "run_name": "predictive_hard_seed2_h3_stability",
+      "kind": "train_eval",
+      "group": "stability",
+      "report_section": "stability",
+      "model": "predictive",
+      "difficulty": "hard",
+      "seed": 2,
+      "total_timesteps": 100000,
+      "model_kwargs": {
+        "horizon": 3,
+        "aux_coef": 0.2
+      },
+      "expected_outputs": [
+        "checkpoints/predictive_hard_seed2_h3_stability.pt",
+        "outputs/train_logs/predictive_hard_seed2_h3_stability_train_summary.json",
+        "outputs/eval/predictive_hard_seed2_h3_stability_summary.json",
+        "outputs/eval/predictive_hard_seed2_h3_stability_hard_episodes.csv"
+      ]
+    }
+  ]
+}

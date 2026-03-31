@@ -1,0 +1,29 @@
+{
+  "run_name": "gnn_medium_seed0_main",
+  "summary_type": "training",
+  "created_at_utc": "2026-03-27T11:38:12+00:00",
+  "checkpoint": "checkpoints\\gnn_medium_seed0_main.pt",
+  "history_path": "outputs\\train_logs\\gnn_medium_seed0_main_train_history.csv",
+  "logs": {
+    "loss": 0.37207111716270447,
+    "policy_loss": 0.07019537687301636,
+    "value_loss": 0.6151878833770752,
+    "entropy": 0.5718197822570801,
+    "aux_loss": 0.0,
+    "episode_return": -10.170000000000003
+  },
+  "metadata": {
+    "run_group": "main",
+    "report_section": "main_results",
+    "device": "cuda",
+    "checkpoint_path": "checkpoints\\gnn_medium_seed0_main.pt",
+    "history_path": "outputs\\train_logs\\gnn_medium_seed0_main_train_history.csv"
+  },
+  "config": {
+    "model": "gnn",
+    "difficulty": "medium",
+    "seed": 0,
+    "total_timesteps": 60000,
+    "model_kwargs": {}
+  }
+}

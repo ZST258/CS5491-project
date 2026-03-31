@@ -1,0 +1,40 @@
+{
+  "run_name": "predictive_medium_seed0_h3_main",
+  "summary_type": "evaluation",
+  "created_at_utc": "2026-03-27T15:00:42+00:00",
+  "metadata": {
+    "model": "predictive",
+    "difficulty": "medium",
+    "seed": 0,
+    "run_group": "main",
+    "report_section": "main_results",
+    "checkpoint_path": "checkpoints\\predictive_medium_seed0_h3_main.pt",
+    "checkpoint_metadata": {
+      "model": "predictive",
+      "difficulty": "medium",
+      "seed": 0,
+      "total_timesteps": 80000,
+      "run_name": "predictive_medium_seed0_h3_main",
+      "model_kwargs": {
+        "horizon": 3,
+        "aux_coef": 0.2
+      },
+      "run_group": "main",
+      "report_section": "main_results",
+      "created_at_utc": "2026-03-27T15:00:18+00:00"
+    },
+    "eval_suite_path": "configs\\eval_suite.json",
+    "output_dir": "outputs\\eval",
+    "qualitative_dir": "outputs/qualitative",
+    "exported_cases": 0
+  },
+  "summary": {
+    "medium": {
+      "episodes": 100,
+      "success_rate": 0.03,
+      "collision_rate": 0.52,
+      "avg_episode_length": 26.16,
+      "path_efficiency": 1.0
+    }
+  }
+}

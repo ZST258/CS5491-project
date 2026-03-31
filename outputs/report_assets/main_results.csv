@@ -1,0 +1,13 @@
+run_name,group,report_section,model,difficulty,seed,horizon,label,success_rate,collision_rate,path_efficiency,avg_episode_length
+gnn_easy_seed0_main,main,main_results,gnn,easy,0,,gnn,0.14,0.35,1.0,18.85
+mlp_easy_seed0_main,main,main_results,mlp,easy,0,,mlp,0.08,0.39,1.0,20.05
+oracle_all_seed0,main,main_results,oracle,easy,0,,oracle,1.0,0.0,1.0,5.58
+predictive_easy_seed0_h3_main,main,main_results,predictive,easy,0,3,predictive_h3,0.14,0.48,0.8833333333333334,18.51
+gnn_medium_seed0_main,main,main_results,gnn,medium,0,,gnn,0.09,0.58,1.0,22.58
+mlp_medium_seed0_main,main,main_results,mlp,medium,0,,mlp,0.12,0.53,1.0,23.23
+oracle_all_seed0,main,main_results,oracle,medium,0,,oracle,1.0,0.0,1.0,6.46
+predictive_medium_seed0_h3_main,main,main_results,predictive,medium,0,3,predictive_h3,0.03,0.52,1.0,26.16
+gnn_hard_seed0_main,main,main_results,gnn,hard,0,,gnn,0.02,0.73,1.0,25.54
+mlp_hard_seed0_main,main,main_results,mlp,hard,0,,mlp,0.02,0.73,1.0,25.54
+oracle_all_seed0,main,main_results,oracle,hard,0,,oracle,1.0,0.0,1.0,7.86
+predictive_hard_seed0_h3_main,main,main_results,predictive,hard,0,3,predictive_h3,0.07,0.62,1.0129870129870129,27.24

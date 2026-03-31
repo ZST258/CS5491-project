@@ -1,0 +1,29 @@
+{
+  "run_name": "mlp_easy_seed0_main",
+  "summary_type": "training",
+  "created_at_utc": "2026-03-27T11:09:57+00:00",
+  "checkpoint": "checkpoints\\mlp_easy_seed0_main.pt",
+  "history_path": "outputs\\train_logs\\mlp_easy_seed0_main_train_history.csv",
+  "logs": {
+    "loss": 0.24492202699184418,
+    "policy_loss": 0.0012384902220219374,
+    "value_loss": 0.504256010055542,
+    "entropy": 0.8444468379020691,
+    "aux_loss": 0.0,
+    "episode_return": -5.210000000000002
+  },
+  "metadata": {
+    "run_group": "main",
+    "report_section": "main_results",
+    "device": "cuda",
+    "checkpoint_path": "checkpoints\\mlp_easy_seed0_main.pt",
+    "history_path": "outputs\\train_logs\\mlp_easy_seed0_main_train_history.csv"
+  },
+  "config": {
+    "model": "mlp",
+    "difficulty": "easy",
+    "seed": 0,
+    "total_timesteps": 30000,
+    "model_kwargs": {}
+  }
+}

@@ -1,0 +1,10 @@
+run_name,group,report_section,model,difficulty,seed,total_timesteps,horizon,final_loss,episode_return,aux_loss,history_path
+mlp_easy_seed0_main,main,main_results,mlp,easy,0,30000,,0.24492202699184418,-5.210000000000002,0.0,outputs\train_logs\mlp_easy_seed0_main_train_history.csv
+mlp_medium_seed0_main,main,main_results,mlp,medium,0,50000,,2.031559467315674,-13.229999999999999,0.0,outputs\train_logs\mlp_medium_seed0_main_train_history.csv
+mlp_hard_seed0_main,main,main_results,mlp,hard,0,70000,,0.46995753049850464,-14.325,0.0,outputs\train_logs\mlp_hard_seed0_main_train_history.csv
+gnn_easy_seed0_main,main,main_results,gnn,easy,0,40000,,3.5916643142700195,-0.5933333333333334,0.0,outputs\train_logs\gnn_easy_seed0_main_train_history.csv
+gnn_medium_seed0_main,main,main_results,gnn,medium,0,60000,,0.37207111716270447,-10.170000000000003,0.0,outputs\train_logs\gnn_medium_seed0_main_train_history.csv
+gnn_hard_seed0_main,main,main_results,gnn,hard,0,80000,,0.4833168089389801,-13.576666666666668,0.0,outputs\train_logs\gnn_hard_seed0_main_train_history.csv
+predictive_easy_seed0_h3_main,main,main_results,predictive,easy,0,50000,3,2.847334146499634,-7.33388888888889,0.0612601600587368,outputs\train_logs\predictive_easy_seed0_h3_main_train_history.csv
+predictive_medium_seed0_h3_main,main,main_results,predictive,medium,0,80000,3,4.991704940795898,-9.410999999999998,0.06648942828178406,outputs\train_logs\predictive_medium_seed0_h3_main_train_history.csv
+predictive_hard_seed0_h3_main,main,main_results,predictive,hard,0,100000,3,0.2556767165660858,-11.940000000000003,0.03511980548501015,outputs\train_logs\predictive_hard_seed0_h3_main_train_history.csv

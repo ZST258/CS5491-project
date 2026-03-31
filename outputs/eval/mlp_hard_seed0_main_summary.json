@@ -1,0 +1,37 @@
+{
+  "run_name": "mlp_hard_seed0_main",
+  "summary_type": "evaluation",
+  "created_at_utc": "2026-03-27T11:17:21+00:00",
+  "metadata": {
+    "model": "mlp",
+    "difficulty": "hard",
+    "seed": 0,
+    "run_group": "main",
+    "report_section": "main_results",
+    "checkpoint_path": "checkpoints\\mlp_hard_seed0_main.pt",
+    "checkpoint_metadata": {
+      "model": "mlp",
+      "difficulty": "hard",
+      "seed": 0,
+      "total_timesteps": 70000,
+      "run_name": "mlp_hard_seed0_main",
+      "model_kwargs": {},
+      "run_group": "main",
+      "report_section": "main_results",
+      "created_at_utc": "2026-03-27T11:17:11+00:00"
+    },
+    "eval_suite_path": "configs\\eval_suite.json",
+    "output_dir": "outputs\\eval",
+    "qualitative_dir": "outputs/qualitative",
+    "exported_cases": 0
+  },
+  "summary": {
+    "hard": {
+      "episodes": 100,
+      "success_rate": 0.02,
+      "collision_rate": 0.73,
+      "avg_episode_length": 25.54,
+      "path_efficiency": 1.0
+    }
+  }
+}

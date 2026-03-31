@@ -1,0 +1,3 @@
+run_name,group,report_section,model,difficulty,seed,horizon,label,success_rate,collision_rate,path_efficiency,avg_episode_length
+gnn_medium_seed0_main,main,main_results,gnn,medium,0,,gnn,0.09,0.58,1.0,22.58
+gnn_hard_seed0_main,main,main_results,gnn,hard,0,,gnn,0.02,0.73,1.0,25.54

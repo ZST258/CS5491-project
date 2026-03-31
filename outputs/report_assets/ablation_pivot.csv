@@ -1,0 +1,3 @@
+difficulty,gnn_success_rate,gnn_collision_rate,gnn_path_efficiency,gnn_avg_episode_length
+medium,0.09,0.58,1.0,22.58
+hard,0.02,0.73,1.0,25.54

@@ -1,0 +1,125 @@
+{
+  "main": {
+    "easy": {
+      "gnn": {
+        "success_rate": 0.14,
+        "collision_rate": 0.35,
+        "path_efficiency": 1.0,
+        "avg_episode_length": 18.85
+      },
+      "mlp": {
+        "success_rate": 0.08,
+        "collision_rate": 0.39,
+        "path_efficiency": 1.0,
+        "avg_episode_length": 20.05
+      },
+      "oracle": {
+        "success_rate": 1.0,
+        "collision_rate": 0.0,
+        "path_efficiency": 1.0,
+        "avg_episode_length": 5.58
+      },
+      "predictive": {
+        "success_rate": 0.14,
+        "collision_rate": 0.48,
+        "path_efficiency": 0.8833333333333334,
+        "avg_episode_length": 18.51
+      }
+    },
+    "medium": {
+      "gnn": {
+        "success_rate": 0.09,
+        "collision_rate": 0.58,
+        "path_efficiency": 1.0,
+        "avg_episode_length": 22.58
+      },
+      "mlp": {
+        "success_rate": 0.12,
+        "collision_rate": 0.53,
+        "path_efficiency": 1.0,
+        "avg_episode_length": 23.23
+      },
+      "oracle": {
+        "success_rate": 1.0,
+        "collision_rate": 0.0,
+        "path_efficiency": 1.0,
+        "avg_episode_length": 6.46
+      },
+      "predictive": {
+        "success_rate": 0.03,
+        "collision_rate": 0.52,
+        "path_efficiency": 1.0,
+        "avg_episode_length": 26.16
+      }
+    },
+    "hard": {
+      "gnn": {
+        "success_rate": 0.02,
+        "collision_rate": 0.73,
+        "path_efficiency": 1.0,
+        "avg_episode_length": 25.54
+      },
+      "mlp": {
+        "success_rate": 0.02,
+        "collision_rate": 0.73,
+        "path_efficiency": 1.0,
+        "avg_episode_length": 25.54
+      },
+      "oracle": {
+        "success_rate": 1.0,
+        "collision_rate": 0.0,
+        "path_efficiency": 1.0,
+        "avg_episode_length": 7.86
+      },
+      "predictive": {
+        "success_rate": 0.07,
+        "collision_rate": 0.62,
+        "path_efficiency": 1.0129870129870129,
+        "avg_episode_length": 27.24
+      }
+    }
+  },
+  "ablation": {
+    "medium": {
+      "gnn": {
+        "success_rate": 0.09,
+        "collision_rate": 0.58,
+        "path_efficiency": 1.0,
+        "avg_episode_length": 22.58
+      }
+    },
+    "hard": {
+      "gnn": {
+        "success_rate": 0.02,
+        "collision_rate": 0.73,
+        "path_efficiency": 1.0,
+        "avg_episode_length": 25.54
+      }
+    }
+  },
+  "stability": {
+    "hard": {
+      "label": "predictive_h3",
+      "count": 1,
+      "success_rate_mean": 0.07,
+      "success_rate_min": 0.07,
+      "success_rate_max": 0.07,
+      "collision_rate_mean": 0.62,
+      "collision_rate_min": 0.62,
+      "collision_rate_max": 0.62,
+      "path_efficiency_mean": 1.0129870129870129,
+      "path_efficiency_min": 1.0129870129870129,
+      "path_efficiency_max": 1.0129870129870129,
+      "avg_episode_length_mean": 27.24,
+      "avg_episode_length_min": 27.24,
+      "avg_episode_length_max": 27.24
+    }
+  },
+  "paths": {
+    "main_results_csv": "outputs\\report_assets\\main_results.csv",
+    "main_results_pivot_csv": "outputs\\report_assets\\main_results_pivot.csv",
+    "ablation_pivot_csv": "outputs\\report_assets\\ablation_pivot.csv",
+    "stability_summary_csv": "outputs\\report_assets\\stability_summary.csv",
+    "failure_cases_md": "outputs\\report_assets\\failure_cases.md"
+  }
+}

@@ -1,0 +1,356 @@
+CS5491 Project Team Progress Update
+Date: 2026-03-17
+Project: Graph-Based Predictive Agent for Dynamic Navigation
+
+====================================================================
+1. Project Status Summary
+====================================================================
+
+目前项目已经完成了“代码骨架 + 实验交付工具链”的大部分工作，
+可以认为已经进入“正式实验执行和最终报告润色”前的准备完成阶段。
+
+一句话总结：
+我们已经把项目从 proposal 阶段推进到了“可训练、可评测、可导出结果、
+可生成报告草稿”的状态，但还没有开始大规模正式实验。
+
+当前整体状态建议定义为：
+- Codebase status: mostly ready
+- Experiment status: not fully executed yet
+- Report status: draft-ready
+- Presentation status: draft-ready
+
+
+====================================================================
+2. What Has Been Completed
+====================================================================
+
+2.1 Core project code
+
+以下核心内容已经实现：
+
+- Dynamic navigation environment
+  实现了 easy / medium / hard 三档动态障碍导航环境。
+
+- Observation pipeline
+  已统一为 graph-friendly schema，包含：
+  node_features / edge_index / global_features / action_mask / node_count
+
+- Baselines and final model
+  已实现三种可训练模型：
+  1. MLP-PPO
+  2. GNN-PPO
+  3. Predictive (GAT + GRU + PPO)
+
+- Oracle planner
+  已实现 time-expanded A*，用于 path efficiency 和参考最优路径。
+
+- PPO training and evaluation
+  已有统一训练入口 train.py 和统一评测入口 eval.py。
+
+
+2.2 Experiment infrastructure
+
+以下实验工具已经完成：
+
+- Frozen evaluation suite
+  已生成固定测试集 configs/eval_suite.json
+
+- Locked experiment matrix
+  已整理 configs/experiments.json，覆盖：
+  main / ablation / stability 三类运行
+
+- Experiment runner
+  已实现 run_experiments.py，支持：
+  dry-run / run / only-tag / skip-existing / resume-failed / export-cases
+
+- Training and evaluation metadata
+  每次训练和评测都会输出 summary、history、checkpoint metadata，
+  便于后续追踪和报告引用。
+
+
+2.3 Delivery pipeline
+
+以下交付链路已经具备：
+
+- Result aggregation
+  aggregate_results.py 可生成：
+  main_results.csv
+  main_results_pivot.csv
+  ablation_results.csv
+  ablation_pivot.csv
+  stability_results.csv
+  stability_summary.csv
+  report_numbers.json
+  report_tables.md
+  results_narrative.md
+  failure_cases.md / failure_cases.json
+
+- Figure generation
+  make_figures.py 已支持生成：
+  success_rate
+  collision_rate
+  path_efficiency
+  training_curve or training snapshot
+
+  即使本机没有 matplotlib，也可以输出 SVG 版本。
+
+- Qualitative export
+  已支持导出：
+  single-episode rollout
+  ASCII frames
+  per-step CSV
+  trajectory SVG
+  failure case summary
+
+- Draft report and slides
+  已支持自动生成：
+  reports/final_report_draft.md
+  reports/presentation_draft.md
+
+
+2.4 Validation
+
+当前测试状态：
+- pytest: 13 passed
+
+这表示当前仓库在“代码结构、主流程、聚合与交付工具”层面是稳定的。
+
+
+====================================================================
+3. What Is NOT Finished Yet
+====================================================================
+
+以下内容还没有真正完成：
+
+3.1 Formal long-run experiments
+
+我们还没有正式跑完整实验矩阵，包括：
+- MLP main results on easy / medium / hard
+- GNN main results on easy / medium / hard
+- Predictive main results on easy / medium / hard
+- Predictive H=1 ablation
+- Predictive hard seed 1 / 2 stability runs
+
+换句话说：
+代码已经准备好，但最终实验数字还没有生成。
+
+
+3.2 Final qualitative selection
+
+虽然 qualitative export 脚本已经完成，
+但还没有基于正式结果挑选最终要放进报告和 slides 的代表性案例：
+- best success case
+- representative collision
+- representative timeout / detour
+
+
+3.3 Final writing and polishing
+
+报告和 slides 已经有可编辑初稿，但还没有做最终定稿：
+- 还没替换成最终实验数字
+- 还没形成最终结论表述
+- 还没完成图表与正文的一一对齐
+
+
+====================================================================
+4. Code Structure and What Each Part Does
+====================================================================
+
+4.1 Main folders
+
+- dynamic_nav/
+  核心项目包。包含环境、模型、PPO、评测和定性分析相关逻辑。
+
+- configs/
+  存放固定实验配置和冻结测试集。
+
+- outputs/
+  所有运行结果、图表、聚合结果、定性导出产物都在这里。
+
+- reports/
+  报告和 presentation 的模板、draft 和对外沟通文档。
+
+- tests/
+  自动测试。
+
+
+4.2 Important files
+
+- dynamic_nav/env.py
+  动态环境定义。负责 reset / step / render / obstacle motion / observation construction。
+
+- dynamic_nav/oracle.py
+  时间展开 A* 规划器，用于 oracle shortest path。
+
+- dynamic_nav/models/mlp.py
+  非结构化 baseline。
+
+- dynamic_nav/models/gnn.py
+  图结构 baseline。
+
+- dynamic_nav/models/predictive.py
+  最终 predictive agent，负责 latent rollout 和 auxiliary loss。
+
+- dynamic_nav/ppo.py
+  PPO trainer，负责 rollout、advantage、update 和 training history。
+
+- dynamic_nav/qualitative.py
+  定性分析工具，负责：
+  case selection / rollout replay / failure classification / SVG export
+
+- train.py
+  统一训练入口。
+
+- eval.py
+  统一评测入口，同时支持导出 qualitative cases。
+
+- run_experiments.py
+  实验编排脚本，负责批量执行或 dry-run 检查。
+
+- aggregate_results.py
+  汇总所有评测和训练输出，生成报告级资产。
+
+- make_figures.py
+  生成最终图表。
+
+- generate_report_assets.py
+  根据聚合结果自动生成英文报告草稿和 slides 草稿。
+
+- export_rollouts.py
+  单独导出某一个 episode 的 rollout 轨迹与案例材料。
+
+
+4.3 Important output locations
+
+- outputs/eval/
+  每个 run 的评测 summary 和 per-episode CSV
+
+- outputs/train_logs/
+  每个 run 的训练 summary 和 history CSV
+
+- outputs/report_assets/
+  报告用表格、数字字典、叙事草稿、失败案例汇总
+
+- outputs/figures/
+  最终图表和 qualitative SVG 拷贝
+
+- outputs/qualitative/
+  单个案例的 JSON / CSV / TXT / SVG / markdown summary
+
+
+====================================================================
+5. Suggested Team Understanding
+====================================================================
+
+目前最重要的一点是：
+不要再把项目理解成“还在写基础代码”，而应该理解成：
+
+“基础代码和交付代码都基本完成，接下来主要是执行正式实验，
+整理案例，最后把结果写进报告和 slides。”
+
+也就是说，项目节奏应该从“开发模式”切换到“实验和交付模式”。
+
+
+====================================================================
+6. Recommended Remaining Work Split
+====================================================================
+
+建议分工如下：
+
+Member A: Experiment execution
+- 检查 GPU 和依赖
+- 跑 main runs
+- 跑 ablation runs
+- 跑 stability runs
+- 确认输出完整性
+
+Member B: Result aggregation and figures
+- 跑 aggregate_results.py
+- 跑 make_figures.py
+- 导出 qualitative cases
+- 选择 2-3 个最终案例
+
+Member C: Report and presentation polishing
+- 基于 reports/final_report_draft.md 改最终报告
+- 基于 reports/presentation_draft.md 改最终 slides
+- 对齐表格、图表、数字和文字结论
+
+All members:
+- 共同确认最后结论是否与结果一致
+- 共同检查复现流程是否可运行
+
+
+====================================================================
+7. Immediate Next Steps
+====================================================================
+
+建议接下来按这个顺序执行：
+
+Step 1.
+确认正式实验环境：
+- Python env
+- torch
+- GPU availability
+- 是否需要安装 matplotlib / gymnasium / torch-geometric
+
+Step 2.
+先做 dry-run：
+- python3 run_experiments.py --mode dry-run
+
+Step 3.
+执行 main runs：
+- main tag first
+
+Step 4.
+执行 ablation 和 stability：
+- predictive_h1
+- predictive hard extra seeds
+
+Step 5.
+汇总结果并生成图表：
+- aggregate_results.py
+- make_figures.py
+
+Step 6.
+导出 qualitative cases：
+- eval.py --export-cases
+- export_rollouts.py
+
+Step 7.
+更新最终英文报告和 slides：
+- final_report_draft.md
+- presentation_draft.md
+
+
+====================================================================
+8. Risks and Notes
+====================================================================
+
+- 风险 1：正式实验结果可能不够漂亮
+  这并不意味着项目失败。当前代码已经支持：
+  structured vs flat baseline comparison
+  prediction horizon ablation
+  failure analysis
+  所以即使数字提升有限，也可以形成完整叙事。
+
+- 风险 2：训练时间可能比预期长
+  所以建议先 main，再 ablation/stability，不要一开始全部并行乱跑。
+
+- 风险 3：图表和报告数字不一致
+  当前已经通过 report_numbers.json 统一数字来源，后续应尽量不要手抄结果。
+
+
+====================================================================
+9. Bottom Line
+====================================================================
+
+当前项目已经不是“还没搭起来”，而是“已经搭好，等待正式实验填结果”。
+
+如果按整体完成度看：
+- Code and tooling: around 90% done
+- Final experiment results: mostly pending
+- Final report/slides polishing: pending but draft-ready
+
+所以当前阶段最重要的工作不是继续大改模型，
+而是稳定执行实验、整理结果、写出结论。
+

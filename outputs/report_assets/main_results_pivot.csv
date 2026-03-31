@@ -1,0 +1,4 @@
+difficulty,gnn_success_rate,gnn_collision_rate,gnn_path_efficiency,gnn_avg_episode_length,mlp_success_rate,mlp_collision_rate,mlp_path_efficiency,mlp_avg_episode_length,oracle_success_rate,oracle_collision_rate,oracle_path_efficiency,oracle_avg_episode_length,predictive_success_rate,predictive_collision_rate,predictive_path_efficiency,predictive_avg_episode_length
+easy,0.14,0.35,1.0,18.85,0.08,0.39,1.0,20.05,1.0,0.0,1.0,5.58,0.14,0.48,0.8833333333333334,18.51
+medium,0.09,0.58,1.0,22.58,0.12,0.53,1.0,23.23,1.0,0.0,1.0,6.46,0.03,0.52,1.0,26.16
+hard,0.02,0.73,1.0,25.54,0.02,0.73,1.0,25.54,1.0,0.0,1.0,7.86,0.07,0.62,1.0129870129870129,27.24

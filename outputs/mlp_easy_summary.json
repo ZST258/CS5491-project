@@ -1,0 +1,9 @@
+{
+  "easy": {
+    "episodes": 100,
+    "success_rate": 0.04,
+    "collision_rate": 0.37,
+    "avg_episode_length": 20.64,
+    "path_efficiency": 1.0
+  }
+}

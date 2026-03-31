@@ -1,0 +1,2 @@
+difficulty,label,count,success_rate_mean,success_rate_min,success_rate_max,collision_rate_mean,collision_rate_min,collision_rate_max,path_efficiency_mean,path_efficiency_min,path_efficiency_max,avg_episode_length_mean,avg_episode_length_min,avg_episode_length_max
+hard,predictive_h3,1,0.07,0.07,0.07,0.62,0.62,0.62,1.0129870129870129,1.0129870129870129,1.0129870129870129,27.24,27.24,27.24

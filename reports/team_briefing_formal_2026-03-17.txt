@@ -1,0 +1,393 @@
+CS5491 INTERNAL PROJECT BRIEFING
+Graph-Based Predictive Agent for Dynamic Navigation
+Prepared for: Project Team
+Prepared on: 2026-03-17
+
+
+====================================================================
+EXECUTIVE SUMMARY
+====================================================================
+
+This project is no longer in the proposal or early prototyping stage.
+We now have a stable implementation base, a reproducible experiment
+pipeline, qualitative analysis tools, and auto-generated report assets.
+
+The current bottleneck is no longer "writing the basic code".
+The current bottleneck is:
+
+1. running the formal experiment matrix,
+2. selecting the final qualitative cases,
+3. revising the final report and presentation with the real numbers.
+
+In short:
+the project is technically ready for the final experiment-and-delivery
+phase, but the final experimental evidence has not yet been produced.
+
+
+====================================================================
+PROJECT STATUS DASHBOARD
+====================================================================
+
+Overall codebase readiness          : HIGH
+Experiment infrastructure readiness : HIGH
+Formal result completeness          : LOW
+Report draft readiness              : HIGH
+Presentation draft readiness        : HIGH
+Submission readiness today          : MEDIUM
+
+Practical interpretation:
+- We are ready to run the final experiments.
+- We are not yet ready to submit the final project.
+- The remaining work is mainly execution, analysis, and polishing.
+
+
+====================================================================
+1. CURRENT PROGRESS
+====================================================================
+
+1.1 Core implementation status
+
+The following major technical components are already implemented:
+
+- dynamic navigation environment with easy / medium / hard tiers
+- moving obstacles with constant-velocity and random-walk behavior
+- unified graph-oriented observation interface
+- oracle planner based on time-expanded A*
+- MLP-PPO baseline
+- GNN-PPO baseline
+- Predictive policy with graph encoder + GRU latent rollout + PPO
+- unified training script
+- unified evaluation script
+
+This means the project already has a coherent end-to-end technical path:
+environment -> training -> evaluation -> aggregation -> figures -> report draft
+
+
+1.2 Experiment tooling status
+
+The experiment delivery layer is also in place:
+
+- frozen evaluation suite
+- locked experiment matrix
+- batch experiment runner
+- resumable / filterable execution interface
+- training metadata output
+- evaluation metadata output
+- result aggregation and pivot tables
+- stability summary generation
+- qualitative case export
+- figure generation
+- report and slide draft generation
+
+
+1.3 Validation status
+
+Current automated test result:
+- pytest: 13 passed
+
+Interpretation:
+the repository is stable enough for the team to begin final execution
+work without first redesigning the implementation.
+
+
+====================================================================
+2. WHAT HAS BEEN COMPLETED
+====================================================================
+
+2.1 Engineering completion
+
+Completed items:
+
+- environment implementation
+- graph observation pipeline
+- baseline models
+- predictive model
+- PPO training loop
+- evaluation and metric computation
+- oracle path reference
+
+
+2.2 Reproducibility completion
+
+Completed items:
+
+- frozen test suite under configs/eval_suite.json
+- locked experiment schedule under configs/experiments.json
+- per-run checkpoint and summary naming
+- training-history export
+- evaluation CSV export
+- report-level asset aggregation
+
+
+2.3 Delivery readiness completion
+
+Completed items:
+
+- markdown report draft generation
+- markdown presentation draft generation
+- qualitative rollout export
+- figure generation with no heavy dependency requirement
+- failure-case markdown / JSON generation
+
+
+====================================================================
+3. WHAT IS STILL NOT DONE
+====================================================================
+
+3.1 Formal experiments are still pending
+
+The following are still missing:
+
+- full main comparison results for:
+  MLP / GNN / Predictive on easy / medium / hard
+
+- predictive ablation results:
+  H=1 versus H=3
+
+- predictive stability results:
+  hard split, seed 1 and seed 2
+
+Without these runs, the project does not yet have final evidence for:
+- final comparison table
+- final quantitative claims
+- final conclusion wording
+
+
+3.2 Final qualitative case selection is pending
+
+Although the export tools exist, the final report-quality cases
+have not yet been selected.
+
+We still need to choose:
+- one strong success case
+- one representative collision case
+- one representative detour / timeout case
+
+
+3.3 Final writing is pending
+
+The report and presentation are draft-ready, not final-ready.
+
+They still require:
+- final metrics inserted
+- final figures inserted
+- final wording aligned with the actual results
+- consistency check across report, slides, and raw outputs
+
+
+====================================================================
+4. CODE STRUCTURE AND PURPOSE
+====================================================================
+
+4.1 Repository structure
+
+- dynamic_nav/
+  Main project package. Contains environment, models, PPO logic,
+  metrics, oracle planning, reporting helpers, and qualitative tools.
+
+- configs/
+  Frozen evaluation suite and locked experiment matrix.
+
+- outputs/
+  Generated artifacts: training logs, evaluation summaries, figures,
+  report assets, and qualitative exports.
+
+- reports/
+  Human-facing documentation and generated project writing drafts.
+
+- tests/
+  Automated validation for the pipeline and key components.
+
+
+4.2 Key implementation files
+
+- dynamic_nav/env.py
+  Environment definition and state transition logic.
+
+- dynamic_nav/oracle.py
+  Time-expanded A* planner used as oracle reference.
+
+- dynamic_nav/models/mlp.py
+  Flat baseline policy.
+
+- dynamic_nav/models/gnn.py
+  Graph-based relational baseline policy.
+
+- dynamic_nav/models/predictive.py
+  Predictive policy with latent rollout and auxiliary loss.
+
+- dynamic_nav/ppo.py
+  PPO trainer and training-history generation.
+
+- dynamic_nav/qualitative.py
+  Rollout replay, failure classification, qualitative case export.
+
+- train.py
+  Unified model training entrypoint.
+
+- eval.py
+  Unified evaluation entrypoint, with optional case export.
+
+- run_experiments.py
+  Formal run orchestrator for main / ablation / stability runs.
+
+- aggregate_results.py
+  Converts raw run outputs into report-grade tables and dictionaries.
+
+- make_figures.py
+  Produces comparison figures and training-curve assets.
+
+- generate_report_assets.py
+  Generates editable report and presentation drafts.
+
+- export_rollouts.py
+  Exports a specific episode as a qualitative case bundle.
+
+
+4.3 Important artifact directories
+
+- outputs/eval/
+  Evaluation summaries and per-episode CSV files
+
+- outputs/train_logs/
+  Training summaries and training-history CSV files
+
+- outputs/report_assets/
+  Pivot tables, report numbers, narrative notes, failure summaries
+
+- outputs/figures/
+  Final chart assets and copied qualitative figures
+
+- outputs/qualitative/
+  Rollout JSON / CSV / TXT / SVG case bundles
+
+
+====================================================================
+5. WHAT THE TEAM SHOULD UNDERSTAND NOW
+====================================================================
+
+The biggest mindset update is this:
+
+We should stop treating the project as a code-construction task and
+start treating it as an experiment execution and delivery task.
+
+That means:
+- no large architectural rewrites unless absolutely necessary
+- prioritize stable experiment execution
+- prioritize consistent result aggregation
+- prioritize clear final reporting over unnecessary new features
+
+
+====================================================================
+6. RECOMMENDED NEXT WORK SPLIT
+====================================================================
+
+Suggested ownership split:
+
+Member A: Formal experiment execution
+- verify environment and dependencies
+- run main comparison matrix
+- run ablations
+- run stability checks
+- confirm all outputs are complete
+
+Member B: Results and qualitative analysis
+- aggregate outputs
+- generate figures
+- export qualitative cases
+- select final success / collision / detour examples
+
+Member C: Final writing and presentation
+- revise final_report_draft.md
+- revise presentation_draft.md
+- align conclusions with numbers and figures
+- check wording consistency across deliverables
+
+Shared responsibility:
+- final interpretation of results
+- final reproducibility sanity check
+- final submission packaging
+
+
+====================================================================
+7. RECOMMENDED EXECUTION ORDER
+====================================================================
+
+The recommended near-term sequence is:
+
+Step 1. Verify final runtime environment
+- Python environment
+- torch installation
+- GPU visibility
+- required plotting / optional libraries
+
+Step 2. Run experiment dry-run
+- verify command manifest
+- verify expected outputs
+
+Step 3. Execute main comparison
+- run oracle, MLP, GNN, Predictive main runs first
+
+Step 4. Execute ablation and stability
+- predictive H=1
+- predictive hard additional seeds
+
+Step 5. Aggregate and generate assets
+- run result aggregation
+- generate figures
+- generate qualitative exports
+
+Step 6. Finalize written deliverables
+- update report draft
+- update presentation draft
+- lock final narrative
+
+
+====================================================================
+8. MAIN RISKS
+====================================================================
+
+Risk 1. Final predictive improvement may be limited
+
+Response:
+If this happens, the report should emphasize:
+- graph structure vs flat baseline
+- what forecasting helps with qualitatively
+- what failure modes remain unsolved
+
+
+Risk 2. Training runs may take longer than expected
+
+Response:
+Prioritize in this order:
+- main runs
+- ablation
+- stability
+
+
+Risk 3. Numbers may become inconsistent across files
+
+Response:
+Use generated report assets as the source of truth:
+- report_numbers.json
+- pivot tables
+- generated figure assets
+
+
+====================================================================
+9. BOTTOM LINE
+====================================================================
+
+Current project state:
+
+- foundational implementation: complete
+- delivery tooling: complete
+- formal experiment evidence: pending
+- final report polish: pending
+
+The remaining work is important, but it is no longer ambiguous.
+We now know exactly what still needs to be done and in what order.
+
+The team should therefore move forward with confidence:
+the project is structurally sound, and the next phase is execution.
+
