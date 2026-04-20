@@ -1,7 +1,7 @@
 {
   "run_name": "gnn_easy_seed0_main",
   "summary_type": "evaluation",
-  "created_at_utc": "2026-03-27T11:25:38+00:00",
+  "created_at_utc": "2026-04-19T14:01:04+00:00",
   "metadata": {
     "model": "gnn",
     "difficulty": "easy",
@@ -15,10 +15,14 @@
       "seed": 0,
       "total_timesteps": 40000,
       "run_name": "gnn_easy_seed0_main",
-      "model_kwargs": {},
+      "model_kwargs": {
+        "latent_dim": 128,
+        "num_layers": 2,
+        "dropout": 0.0
+      },
       "run_group": "main",
       "report_section": "main_results",
-      "created_at_utc": "2026-03-27T11:25:32+00:00"
+      "created_at_utc": "2026-04-19T14:00:55+00:00"
     },
     "eval_suite_path": "configs\\eval_suite.json",
     "output_dir": "outputs\\eval",
@@ -28,10 +32,11 @@
   "summary": {
     "easy": {
       "episodes": 100,
-      "success_rate": 0.14,
-      "collision_rate": 0.35,
-      "avg_episode_length": 18.85,
-      "path_efficiency": 1.0
+      "success_rate": 0.63,
+      "collision_rate": 0.29,
+      "avg_episode_length": 7.51,
+      "time_efficiency": 0.9852859662383472,
+      "move_efficiency": 0.9794658604182415
     }
   }
 }

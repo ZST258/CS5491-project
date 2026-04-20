@@ -1,0 +1,73 @@
+{
+  "run_name": "gnn_easy_seed0_main",
+  "cases": [
+    {
+      "case_name": "gnn_easy_seed0_main_easy_success_90",
+      "run_name": "gnn_easy_seed0_main",
+      "difficulty": "easy",
+      "episode_index": 90,
+      "case_type": "success",
+      "status": "success",
+      "failure_type": "success",
+      "assets": {
+        "json": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_success_90_rollout.json",
+        "steps_csv": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_success_90_steps.csv",
+        "frames_txt": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_success_90_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_success_90_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_success_90_summary.md",
+        "animation_gif": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_success_90_animation.gif"
+      }
+    },
+    {
+      "case_name": "gnn_easy_seed0_main_easy_failure_62",
+      "run_name": "gnn_easy_seed0_main",
+      "difficulty": "easy",
+      "episode_index": 62,
+      "case_type": "failure",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_failure_62_rollout.json",
+        "steps_csv": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_failure_62_steps.csv",
+        "frames_txt": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_failure_62_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_failure_62_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_failure_62_summary.md",
+        "animation_gif": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_failure_62_animation.gif"
+      }
+    },
+    {
+      "case_name": "gnn_easy_seed0_main_easy_detour_29",
+      "run_name": "gnn_easy_seed0_main",
+      "difficulty": "easy",
+      "episode_index": 29,
+      "case_type": "detour",
+      "status": "success",
+      "failure_type": "success",
+      "assets": {
+        "json": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_detour_29_rollout.json",
+        "steps_csv": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_detour_29_steps.csv",
+        "frames_txt": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_detour_29_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_detour_29_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_detour_29_summary.md",
+        "animation_gif": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_detour_29_animation.gif"
+      }
+    },
+    {
+      "case_name": "gnn_easy_seed0_main_easy_closest_collision_8",
+      "run_name": "gnn_easy_seed0_main",
+      "difficulty": "easy",
+      "episode_index": 8,
+      "case_type": "closest_collision",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_closest_collision_8_rollout.json",
+        "steps_csv": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_closest_collision_8_steps.csv",
+        "frames_txt": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_closest_collision_8_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_closest_collision_8_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_closest_collision_8_summary.md",
+        "animation_gif": "outputs\\qualitative\\gnn_easy_seed0_main\\easy\\gnn_easy_seed0_main_easy_closest_collision_8_animation.gif"
+      }
+    }
+  ]
+}

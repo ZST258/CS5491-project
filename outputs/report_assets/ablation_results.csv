@@ -1,3 +1,5 @@
-run_name,group,report_section,model,difficulty,seed,horizon,label,success_rate,collision_rate,path_efficiency,avg_episode_length
-gnn_medium_seed0_main,main,main_results,gnn,medium,0,,gnn,0.09,0.58,1.0,22.58
-gnn_hard_seed0_main,main,main_results,gnn,hard,0,,gnn,0.02,0.73,1.0,25.54
+run_name,group,report_section,model,difficulty,seed,horizon,label,success_rate,collision_rate,time_efficiency,move_efficiency,avg_episode_length
+gnn_medium_seed0_main,main,main_results,gnn,medium,0,,gnn,0.63,0.23,0.9619926590164685,0.961000595524405,13.33
+predictive_medium_seed0_h1_ablation,ablation,ablation,predictive,medium,0,1,predictive_h1,0.84,0.16,0.9804639804639805,0.9772893772893774,5.86
+gnn_hard_seed0_main,main,main_results,gnn,hard,0,,gnn,0.53,0.47,0.9251703974475608,0.9213586955226514,8.9
+predictive_hard_seed0_h1_ablation,ablation,ablation,predictive,hard,0,1,predictive_h1,0.66,0.34,1.005260942760943,1.0,6.16

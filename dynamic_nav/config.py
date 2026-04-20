@@ -39,7 +39,7 @@ DIFFICULTY_CONFIGS = {
         grid_size=12,
         num_obstacles=10,
         max_steps=60,
-        knn_k=4,
+        knn_k=6,
         max_obstacles=10,
     ),
 }
@@ -65,5 +65,5 @@ TYPE_GOAL = 1.0
 TYPE_OBSTACLE = 2.0
 
 NUM_ACTIONS = len(ACTION_DELTAS)
-NODE_FEATURE_DIM = 5
-GLOBAL_FEATURE_DIM = 2
+NODE_FEATURE_DIM = 7   # 新增: is_cv(idx5), is_rw(idx6)
+GLOBAL_FEATURE_DIM = 10  # norm_step, norm_node_count, norm_min_obs_dist, norm_goal_dist, prev_dx, prev_dy, goal_dx, goal_dy, nearest_obs_dx, nearest_obs_dy

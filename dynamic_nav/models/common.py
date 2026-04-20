@@ -7,7 +7,6 @@ import numpy as np
 import torch
 from torch import nn
 
-from dynamic_nav.config import GLOBAL_FEATURE_DIM, NUM_ACTIONS
 from dynamic_nav.observation import flatten_observation
 
 
@@ -48,11 +47,13 @@ def masked_categorical(logits: torch.Tensor, action_mask: torch.Tensor) -> torch
 class MLPBlock(nn.Module):
     def __init__(self, input_dim: int, hidden_dim: int):
         super().__init__()
+        # Expanded MLP block
         self.layers = nn.Sequential(
             nn.Linear(input_dim, hidden_dim),
             nn.Tanh(),
+            nn.LayerNorm(hidden_dim),
             nn.Linear(hidden_dim, hidden_dim),
-            nn.Tanh(),
+            nn.Tanh()
         )
 
     def forward(self, inputs: torch.Tensor) -> torch.Tensor:
@@ -65,21 +66,87 @@ class BasePolicy(nn.Module):
     def __init__(self, device: str | torch.device = "cpu"):
         super().__init__()
         self.device = torch.device(device)
+
+        # --- PopArt buffers ---
+        # Internal network value output is treated as normalized value v_norm.
+        # The PPO loop receives denormalized raw value: v_raw = sigma * v_norm + mu.
+        self.register_buffer("popart_mu", torch.zeros(1, dtype=torch.float32))
+        self.register_buffer("popart_sigma", torch.ones(1, dtype=torch.float32))
+
         self.to(self.device)
 
     def forward_batch(self, observations: list[dict[str, Any]]) -> PolicyOutput:
         raise NotImplementedError
 
-    # 新增：子类可重写（PredictivePolicy 会重写）
     def forward_from_latent(self, latents: torch.Tensor) -> PolicyOutput:
         raise NotImplementedError("forward_from_latent is not implemented for this policy.")
+
+    # ---------------- PopArt API ----------------
+    def get_value_last_layer(self) -> nn.Linear | None:
+        """
+        Return the LAST nn.Linear that outputs the scalar value (normalized space).
+        Subclasses should override. If None, PopArt becomes a no-op.
+        """
+        return None
+
+    @torch.no_grad()
+    def popart_denormalize(self, value_norm: torch.Tensor) -> torch.Tensor:
+        return value_norm * self.popart_sigma + self.popart_mu
+
+    @torch.no_grad()
+    def popart_normalize(self, value_raw: torch.Tensor, eps: float = 1e-5, min_sigma: float = 1e-3) -> torch.Tensor:
+        # Do not add eps to the denominator here. The epsilon is used when
+        # computing batch statistics but shouldn't bias the normalized value.
+        sigma = torch.clamp(self.popart_sigma, min=min_sigma)
+        return (value_raw - self.popart_mu) / sigma
+
+    @torch.no_grad()
+    def popart_update(self, targets_raw: torch.Tensor, beta: float, eps: float, min_sigma: float) -> None:
+        """
+        EMA update running (mu, sigma) using batch raw targets (returns),
+        and compensate the value head last layer so raw predictions stay invariant.
+
+        Compensation:
+          W' = (old_sigma / new_sigma) * W
+          b' = (old_sigma * b + old_mu - new_mu) / new_sigma
+        """
+        layer = self.get_value_last_layer()
+        if layer is None:
+            return
+
+        t = targets_raw.detach().float().view(-1)
+        if t.numel() == 0:
+            return
+
+        old_mu = self.popart_mu.clone()
+        old_sigma = torch.clamp(self.popart_sigma.clone(), min=min_sigma)
+
+        batch_mu = t.mean()
+        batch_var = torch.mean((t - batch_mu) ** 2)
+        batch_sigma = torch.sqrt(batch_var + eps)
+
+        new_mu = beta * old_mu + (1.0 - beta) * batch_mu
+        new_sigma = beta * old_sigma + (1.0 - beta) * batch_sigma
+        new_sigma = torch.clamp(new_sigma, min=min_sigma)
+
+        # compensate last linear layer
+        w = layer.weight.data
+        scale = (old_sigma / new_sigma).to(dtype=w.dtype)  # shape [1]
+        w.mul_(scale)
+
+        if layer.bias is not None:
+            b = layer.bias.data
+            b.copy_(((old_sigma.to(b.dtype) * b) + old_mu.to(b.dtype) - new_mu.to(b.dtype)) / new_sigma.to(b.dtype))
+
+        self.popart_mu.copy_(new_mu)
+        self.popart_sigma.copy_(new_sigma)
+
+    # -----------------------------------------------------------
 
     def auxiliary_loss(self, observations: list[dict[str, Any]], actions: np.ndarray, dones: np.ndarray) -> torch.Tensor:
         return torch.zeros((), device=self.device)
 
-    # 新增：默认无 latent 版，子类可重写
     def auxiliary_loss_from_latent(self, latents: torch.Tensor, actions: np.ndarray, dones: np.ndarray) -> torch.Tensor:
-        # 回退到 observation 版本（需要子类自己支持时再覆盖）
         return torch.zeros((), device=self.device)
 
     def act(self, observation: dict[str, Any]) -> tuple[int, float, float]:
@@ -88,7 +155,10 @@ class BasePolicy(nn.Module):
         dist = masked_categorical(output.logits, action_mask)
         action = dist.sample()
         log_prob = dist.log_prob(action)
-        return int(action.item()), float(log_prob.item()), float(output.value.squeeze(0).item())
+
+        # Return RAW value to the PPO loop
+        value_raw = self.popart_denormalize(output.value.squeeze(0))
+        return int(action.item()), float(log_prob.item()), float(value_raw.item())
 
     def evaluate_actions(
         self,
@@ -102,9 +172,11 @@ class BasePolicy(nn.Module):
         dist = masked_categorical(output.logits, action_masks)
         log_probs = dist.log_prob(actions)
         entropy = dist.entropy()
-        return log_probs, entropy, output.value.squeeze(-1)
 
-    # 新增：用 latent 做 actor/critic 前向，避免重复 encoder
+        # Return RAW values
+        values_raw = self.popart_denormalize(output.value).squeeze(-1)
+        return log_probs, entropy, values_raw
+
     def evaluate_actions_from_latent(
         self,
         latents: torch.Tensor,
@@ -115,7 +187,10 @@ class BasePolicy(nn.Module):
         dist = masked_categorical(output.logits, action_masks)
         log_probs = dist.log_prob(actions)
         entropy = dist.entropy()
-        return log_probs, entropy, output.value.squeeze(-1)
+
+        # Return RAW values
+        values_raw = self.popart_denormalize(output.value).squeeze(-1)
+        return log_probs, entropy, values_raw
 
 
 def flatten_batch(observations: list[dict[str, Any]], max_nodes: int, device: torch.device) -> torch.Tensor:
@@ -123,70 +198,7 @@ def flatten_batch(observations: list[dict[str, Any]], max_nodes: int, device: to
     return torch.as_tensor(np.asarray(flat), dtype=torch.float32, device=device)
 
 
-def graph_inputs(observation: dict[str, Any]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-    node_count = int(np.asarray(observation.get("node_count", [observation["node_features"].shape[0]])).item())
-    node_features = np.asarray(observation["node_features"], dtype=np.float32)[:node_count]
-    edge_index = np.asarray(observation["edge_index"], dtype=np.int64)
-    valid_edges = edge_index[:, np.any(edge_index != 0, axis=0)]
-    if valid_edges.size == 0:
-        valid_edges = np.zeros((2, 0), dtype=np.int64)
-    global_features = np.asarray(observation["global_features"], dtype=np.float32)
-    return node_features, valid_edges, global_features
-
-
-class GraphAttentionEncoder(nn.Module):
-    def __init__(self, input_dim: int, hidden_dim: int, output_dim: int):
-        super().__init__()
-        self.input_proj = nn.Linear(input_dim, hidden_dim)
-        self.attn_proj = nn.Linear(hidden_dim * 2, 1)
-        self.output_proj = nn.Linear(hidden_dim + GLOBAL_FEATURE_DIM, output_dim)
-        self.activation = nn.ELU()
-
-    def forward_single(
-        self, node_features: torch.Tensor, edge_index: torch.Tensor, global_features: torch.Tensor
-    ) -> torch.Tensor:
-        # hidden: [N, H]
-        hidden = self.activation(self.input_proj(node_features))
-        num_nodes = hidden.shape[0]
-        device = hidden.device
-
-        # 构建带自环边
-        if edge_index.numel() > 0:
-            src = edge_index[0]
-            dst = edge_index[1]
-            self_loop = torch.arange(num_nodes, device=device)
-            src = torch.cat([src, self_loop], dim=0)
-            dst = torch.cat([dst, self_loop], dim=0)
-        else:
-            src = torch.arange(num_nodes, device=device)
-            dst = torch.arange(num_nodes, device=device)
-
-        # 边级 attention（避免 N*N pairwise）
-        edge_feat = torch.cat([hidden[src], hidden[dst]], dim=-1)  # [E, 2H]
-        edge_score = self.attn_proj(edge_feat).squeeze(-1)  # [E]
-
-        # 按 dst 做 softmax（简化实现：循环节点，通常 N 不大）
-        attn = torch.zeros_like(edge_score)
-        for node in range(num_nodes):
-            mask = (dst == node)
-            if mask.any():
-                probs = torch.softmax(edge_score[mask].float(), dim=0).to(attn.dtype)
-                attn[mask] = probs
-
-        # 聚合
-        messages = hidden[src] * attn.unsqueeze(-1)  # [E, H]
-        aggregated = torch.zeros_like(hidden)  # [N, H]
-        aggregated.index_add_(0, dst, messages)
-
-        pooled = aggregated.mean(dim=0)  # [H]
-        return self.output_proj(torch.cat([pooled, global_features], dim=0))
-
-    def forward_batch(self, observations: list[dict[str, Any]], device: torch.device) -> torch.Tensor:
-        latents = []
-        for observation in observations:
-            node_features, edge_index, global_features = graph_inputs(observation)
-            node_tensor = torch.as_tensor(node_features, dtype=torch.float32, device=device)
-            edge_tensor = torch.as_tensor(edge_index, dtype=torch.long, device=device)
-            global_tensor = torch.as_tensor(global_features, dtype=torch.float32, device=device)
-            latents.append(self.forward_single(node_tensor, edge_tensor, global_tensor))
-        return torch.stack(latents, dim=0)
+# RoleAwareConvEncoder has been removed. If you need an explicit role-aware
+# convolutional encoder, reintroduce it in a dedicated module. The previous
+# implementation lived here and was intentionally deleted per the user's
+# request to remove legacy role-aware code.

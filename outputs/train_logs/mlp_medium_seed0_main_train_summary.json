@@ -1,16 +1,25 @@
 {
   "run_name": "mlp_medium_seed0_main",
   "summary_type": "training",
-  "created_at_utc": "2026-03-27T11:12:47+00:00",
+  "created_at_utc": "2026-04-20T07:13:30+00:00",
   "checkpoint": "checkpoints\\mlp_medium_seed0_main.pt",
   "history_path": "outputs\\train_logs\\mlp_medium_seed0_main_train_history.csv",
   "logs": {
-    "loss": 2.031559467315674,
-    "policy_loss": 0.0304318368434906,
-    "value_loss": 4.012179851531982,
-    "entropy": 0.496223509311676,
-    "aux_loss": 0.0,
-    "episode_return": -13.229999999999999
+    "returns_norm_mean": 0.09850676357746124,
+    "returns_norm_std": 1.6338614225387573,
+    "loss": 0.136715367436409,
+    "policy_loss": -0.0005056725931353867,
+    "value_loss": 0.5899087190628052,
+    "entropy": 1.025613784790039,
+    "value_pred_mean": -0.0167236328125,
+    "value_pred_std": 0.95654296875,
+    "value_pred_raw_mean": -3.871019124984741,
+    "value_pred_raw_std": 3.1757094860076904,
+    "popart_mu": -3.8154656887054443,
+    "popart_sigma": 3.3207318782806396,
+    "returns_mean": -3.4883508682250977,
+    "returns_std": 5.4256157875061035,
+    "episode_return": -5.1075
   },
   "metadata": {
     "run_group": "main",
@@ -23,7 +32,7 @@
     "model": "mlp",
     "difficulty": "medium",
     "seed": 0,
-    "total_timesteps": 50000,
+    "total_timesteps": 45000,
     "model_kwargs": {}
   }
 }

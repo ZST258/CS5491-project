@@ -22,8 +22,8 @@
 
 ## Slide 5. Main Results
 - Use `outputs\figures\success_rate.svg` and `outputs\report_assets\main_results_pivot.csv`.
-- Easy placeholder: predictive success `0.140`.
-- Hard placeholder: predictive success `0.070`.
+- Easy placeholder: predictive success `0.810`.
+- Hard placeholder: predictive success `0.710`.
 - Replace with final claim after full runs.
 
 ## Slide 6. Ablation

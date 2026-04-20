@@ -1,0 +1,56 @@
+{
+  "run_name": "predictive_hard_seed0_h1_ablation",
+  "cases": [
+    {
+      "case_name": "predictive_hard_seed0_h1_ablation_hard_success_83",
+      "run_name": "predictive_hard_seed0_h1_ablation",
+      "difficulty": "hard",
+      "episode_index": 83,
+      "case_type": "success",
+      "status": "success",
+      "failure_type": "success",
+      "assets": {
+        "json": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_success_83_rollout.json",
+        "steps_csv": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_success_83_steps.csv",
+        "frames_txt": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_success_83_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_success_83_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_success_83_summary.md",
+        "animation_gif": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_success_83_animation.gif"
+      }
+    },
+    {
+      "case_name": "predictive_hard_seed0_h1_ablation_hard_failure_90",
+      "run_name": "predictive_hard_seed0_h1_ablation",
+      "difficulty": "hard",
+      "episode_index": 90,
+      "case_type": "failure",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_failure_90_rollout.json",
+        "steps_csv": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_failure_90_steps.csv",
+        "frames_txt": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_failure_90_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_failure_90_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_failure_90_summary.md",
+        "animation_gif": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_failure_90_animation.gif"
+      }
+    },
+    {
+      "case_name": "predictive_hard_seed0_h1_ablation_hard_closest_collision_4",
+      "run_name": "predictive_hard_seed0_h1_ablation",
+      "difficulty": "hard",
+      "episode_index": 4,
+      "case_type": "closest_collision",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_closest_collision_4_rollout.json",
+        "steps_csv": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_closest_collision_4_steps.csv",
+        "frames_txt": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_closest_collision_4_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_closest_collision_4_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_closest_collision_4_summary.md",
+        "animation_gif": "outputs\\qualitative\\predictive_hard_seed0_h1_ablation\\hard\\predictive_hard_seed0_h1_ablation_hard_closest_collision_4_animation.gif"
+      }
+    }
+  ]
+}

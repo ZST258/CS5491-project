@@ -1,16 +1,25 @@
 {
   "run_name": "mlp_easy_seed0_main",
   "summary_type": "training",
-  "created_at_utc": "2026-03-27T11:09:57+00:00",
+  "created_at_utc": "2026-04-20T07:22:55+00:00",
   "checkpoint": "checkpoints\\mlp_easy_seed0_main.pt",
   "history_path": "outputs\\train_logs\\mlp_easy_seed0_main_train_history.csv",
   "logs": {
-    "loss": 0.24492202699184418,
-    "policy_loss": 0.0012384902220219374,
-    "value_loss": 0.504256010055542,
-    "entropy": 0.8444468379020691,
-    "aux_loss": 0.0,
-    "episode_return": -5.210000000000002
+    "returns_norm_mean": 0.8575250506401062,
+    "returns_norm_std": 2.3608174324035645,
+    "loss": 0.7435635924339294,
+    "policy_loss": 0.23033484816551208,
+    "value_loss": 2.0957813262939453,
+    "entropy": 1.0716620683670044,
+    "value_pred_mean": 0.701171875,
+    "value_pred_std": 0.83837890625,
+    "value_pred_raw_mean": 0.5149028897285461,
+    "value_pred_raw_std": 2.445620059967041,
+    "popart_mu": -1.5305285453796387,
+    "popart_sigma": 2.916630268096924,
+    "returns_mean": 0.9705549478530884,
+    "returns_std": 6.885631561279297,
+    "episode_return": 0.27333333333333376
   },
   "metadata": {
     "run_group": "main",

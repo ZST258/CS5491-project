@@ -1,0 +1,11 @@
+step,from_pos,to_pos,action,action_name,reward,status,path_length,min_obstacle_distance,goal_distance
+1,"[10, 2]","[9, 2]",1,up,-0.2,running,1,1.0,10
+2,"[9, 2]","[8, 2]",1,up,-0.19,running,2,1.0,9
+3,"[8, 2]","[7, 2]",1,up,-0.18,running,3,2.0,8
+4,"[7, 2]","[6, 2]",1,up,-0.17,running,4,2.0,7
+5,"[6, 2]","[5, 2]",1,up,-0.16,running,5,1.0,6
+6,"[5, 2]","[5, 3]",4,right,-0.15000000000000002,running,6,2.0,5
+7,"[5, 3]","[5, 4]",4,right,-0.14,running,7,2.0,4
+8,"[5, 4]","[5, 5]",4,right,-0.13,running,8,1.0,3
+9,"[5, 5]","[5, 6]",4,right,-0.12000000000000001,running,9,2.0,2
+10,"[5, 6]","[5, 7]",4,right,-10.11,collision,10,0.0,1

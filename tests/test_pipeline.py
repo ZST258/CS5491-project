@@ -272,7 +272,7 @@ def test_aggregate_results_and_generate_report_assets(tmp_path: Path):
                     "easy": {
                         "success_rate": 0.5,
                         "collision_rate": 0.2,
-                        "path_efficiency": 0.9,
+                        "time_efficiency": 0.9,
                         "avg_episode_length": 10.0,
                     }
                 }
@@ -287,7 +287,7 @@ def test_aggregate_results_and_generate_report_assets(tmp_path: Path):
                     "hard": {
                         "success_rate": 0.6,
                         "collision_rate": 0.1,
-                        "path_efficiency": 0.8,
+                        "time_efficiency": 0.8,
                         "avg_episode_length": 12.0,
                     }
                 }
@@ -302,7 +302,7 @@ def test_aggregate_results_and_generate_report_assets(tmp_path: Path):
                     "hard": {
                         "success_rate": 0.4,
                         "collision_rate": 0.2,
-                        "path_efficiency": 0.7,
+                        "time_efficiency": 0.7,
                         "avg_episode_length": 14.0,
                     }
                 }

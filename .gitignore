@@ -5,3 +5,7 @@ __pycache__/
 .vscode/
 .idea/
 .DS_Store
+/outputs/archive/
+/checkpoints/backup/
+/scripts/loop_predictive.py
+/scripts/run_until_success_threshold.py

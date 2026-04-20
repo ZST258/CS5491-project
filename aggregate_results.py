@@ -58,7 +58,7 @@ def pivot_rows(rows: list[dict[str, Any]], label_fn, difficulties: list[str]) ->
     for row in rows:
         grouped[row["difficulty"]][label_fn(row)] = row
     labels = sorted({label_fn(row) for row in rows})
-    metrics = ["success_rate", "collision_rate", "path_efficiency", "avg_episode_length"]
+    metrics = ["success_rate", "collision_rate", "time_efficiency", "move_efficiency", "avg_episode_length"]
     pivot = []
     for difficulty in difficulties:
         result = {"difficulty": difficulty}
@@ -78,7 +78,7 @@ def summarize_stability(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     summary_rows = []
     for (difficulty, label), items in sorted(grouped.items(), key=lambda item: (difficulty_order(item[0][0]), item[0][1])):
         summary_row = {"difficulty": difficulty, "label": label, "count": len(items)}
-        for metric in ["success_rate", "collision_rate", "path_efficiency", "avg_episode_length"]:
+        for metric in ["success_rate", "collision_rate", "time_efficiency", "move_efficiency", "avg_episode_length"]:
             values = [float(item[metric]) for item in items if item[metric] not in {"", None}]
             if values:
                 summary_row[f"{metric}_mean"] = mean(values)
@@ -186,7 +186,8 @@ def main():
                 "label": main_label({"model": run["model"], "horizon": run.get("model_kwargs", {}).get("horizon", 3)}),
                 "success_rate": metrics["success_rate"],
                 "collision_rate": metrics["collision_rate"],
-                "path_efficiency": metrics["path_efficiency"] if metrics["path_efficiency"] is not None else "",
+            "time_efficiency": metrics["time_efficiency"] if metrics["time_efficiency"] is not None else "",
+                "move_efficiency": metrics.get("move_efficiency", "") if metrics.get("move_efficiency") is not None else "",
                 "avg_episode_length": metrics["avg_episode_length"],
             }
             if run["group"] == "main":
@@ -215,11 +216,11 @@ def main():
 
     report_numbers = {
         "main": {
-            difficulty: {row["model"]: {metric: row[metric] for metric in ["success_rate", "collision_rate", "path_efficiency", "avg_episode_length"]} for row in main_rows if row["difficulty"] == difficulty}
+            difficulty: {row["model"]: {metric: row[metric] for metric in ["success_rate", "collision_rate", "time_efficiency", "move_efficiency", "avg_episode_length"]} for row in main_rows if row["difficulty"] == difficulty}
             for difficulty in ["easy", "medium", "hard"]
         },
         "ablation": {
-            difficulty: {row["label"]: {metric: row[metric] for metric in ["success_rate", "collision_rate", "path_efficiency", "avg_episode_length"]} for row in ablation_rows if row["difficulty"] == difficulty}
+            difficulty: {row["label"]: {metric: row[metric] for metric in ["success_rate", "collision_rate", "time_efficiency", "move_efficiency", "avg_episode_length"]} for row in ablation_rows if row["difficulty"] == difficulty}
             for difficulty in ["medium", "hard"]
         },
         "stability": {
@@ -240,13 +241,14 @@ def main():
         "",
         "## Main Results",
         "",
-        "| Run | Difficulty | Success | Collision | Path Efficiency | Avg Episode Length |",
-        "| --- | --- | ---: | ---: | ---: | ---: |",
+        "| Run | Difficulty | Success | Collision | Time Efficiency | Move Efficiency | Avg Episode Length |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: |",
     ]
     for row in main_rows:
-        efficiency = "NA" if row["path_efficiency"] == "" else f"{float(row['path_efficiency']):.3f}"
+        time_eff = "NA" if row["time_efficiency"] == "" else f"{float(row['time_efficiency']):.3f}"
+        move_eff = "NA" if row.get("move_efficiency", "") == "" else f"{float(row['move_efficiency']):.3f}"
         table_lines.append(
-            f"| {row['run_name']} | {row['difficulty']} | {float(row['success_rate']):.3f} | {float(row['collision_rate']):.3f} | {efficiency} | {float(row['avg_episode_length']):.3f} |"
+            f"| {row['run_name']} | {row['difficulty']} | {float(row['success_rate']):.3f} | {float(row['collision_rate']):.3f} | {time_eff} | {move_eff} | {float(row['avg_episode_length']):.3f} |"
         )
     table_lines.extend(
         [

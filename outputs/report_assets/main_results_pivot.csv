@@ -1,4 +1,4 @@
-difficulty,gnn_success_rate,gnn_collision_rate,gnn_path_efficiency,gnn_avg_episode_length,mlp_success_rate,mlp_collision_rate,mlp_path_efficiency,mlp_avg_episode_length,oracle_success_rate,oracle_collision_rate,oracle_path_efficiency,oracle_avg_episode_length,predictive_success_rate,predictive_collision_rate,predictive_path_efficiency,predictive_avg_episode_length
-easy,0.14,0.35,1.0,18.85,0.08,0.39,1.0,20.05,1.0,0.0,1.0,5.58,0.14,0.48,0.8833333333333334,18.51
-medium,0.09,0.58,1.0,22.58,0.12,0.53,1.0,23.23,1.0,0.0,1.0,6.46,0.03,0.52,1.0,26.16
-hard,0.02,0.73,1.0,25.54,0.02,0.73,1.0,25.54,1.0,0.0,1.0,7.86,0.07,0.62,1.0129870129870129,27.24
+difficulty,gnn_success_rate,gnn_collision_rate,gnn_time_efficiency,gnn_move_efficiency,gnn_avg_episode_length,mlp_success_rate,mlp_collision_rate,mlp_time_efficiency,mlp_move_efficiency,mlp_avg_episode_length,oracle_success_rate,oracle_collision_rate,oracle_time_efficiency,oracle_move_efficiency,oracle_avg_episode_length,predictive_success_rate,predictive_collision_rate,predictive_time_efficiency,predictive_move_efficiency,predictive_avg_episode_length
+easy,0.63,0.29,0.9852859662383472,0.9794658604182415,7.51,0.47,0.24,0.8650721782368034,0.8607738760661607,14.12,1.0,0.0,1.0,0.9766031746031746,5.58,0.81,0.19,0.9705636613044021,0.9639792991644843,5.07
+medium,0.63,0.23,0.9619926590164685,0.961000595524405,13.33,0.24,0.47,0.8812374546749546,0.8854441854441855,20.82,1.0,0.0,1.0,0.9922145354645354,6.46,0.83,0.17,1.0080321285140563,1.0048192771084339,5.63
+hard,0.53,0.47,0.9251703974475608,0.9213586955226514,8.9,0.2,0.67,0.8990476190476191,0.8990476190476191,22.57,1.0,0.0,1.0,0.9868498168498168,7.86,0.71,0.29,0.9958031014369043,0.991549295774648,6.27

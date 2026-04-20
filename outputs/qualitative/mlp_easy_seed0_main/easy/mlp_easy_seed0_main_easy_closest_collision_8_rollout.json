@@ -1,0 +1,89 @@
+{
+  "difficulty": "easy",
+  "seed": 2034,
+  "grid_size": 8,
+  "goal": [
+    2,
+    6
+  ],
+  "agent_start": [
+    3,
+    0
+  ],
+  "obstacle_starts": [
+    [
+      5,
+      6
+    ],
+    [
+      0,
+      3
+    ],
+    [
+      3,
+      2
+    ]
+  ],
+  "oracle_length": 8,
+  "status": "collision",
+  "failure_type": "late_avoidance",
+  "path_length": 1,
+  "episode_length": 1,
+  "turning_points": [
+    {
+      "step": 1,
+      "reasons": [
+        "near_obstacle"
+      ],
+      "status": "collision"
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "from_pos": [
+        3,
+        0
+      ],
+      "to_pos": [
+        3,
+        1
+      ],
+      "action": 4,
+      "action_name": "right",
+      "reward": -10.16,
+      "status": "collision",
+      "path_length": 1,
+      "min_obstacle_distance": 0.0,
+      "goal_distance": 6,
+      "obstacles": [
+        [
+          6,
+          6
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          3,
+          1
+        ]
+      ]
+    }
+  ],
+  "frames": [
+    "Step 0\n. . . X . . . .\n. . . . . . . .\n. . . . . . G .\nA . X . . . . .\n. . . . . . . .\n. . . . . . X .\n. . . . . . . .\n. . . . . . . .",
+    "Step 1 [right]\n. . . X . . . .\n. . . . . . . .\n. . . . . . G .\n. X . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . X .\n. . . . . . . ."
+  ],
+  "agent_positions": [
+    [
+      3,
+      0
+    ],
+    [
+      3,
+      1
+    ]
+  ]
+}

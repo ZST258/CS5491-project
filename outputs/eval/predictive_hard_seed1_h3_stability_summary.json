@@ -1,0 +1,44 @@
+{
+  "run_name": "predictive_hard_seed1_h3_stability",
+  "summary_type": "evaluation",
+  "created_at_utc": "2026-04-19T19:51:15+00:00",
+  "metadata": {
+    "model": "predictive",
+    "difficulty": "hard",
+    "seed": 1,
+    "run_group": "stability",
+    "report_section": "stability",
+    "checkpoint_path": "checkpoints\\predictive_hard_seed1_h3_stability.pt",
+    "checkpoint_metadata": {
+      "model": "predictive",
+      "difficulty": "hard",
+      "seed": 1,
+      "total_timesteps": 163840,
+      "run_name": "predictive_hard_seed1_h3_stability",
+      "model_kwargs": {
+        "horizon": 3,
+        "aux_coef": 0.2,
+        "latent_dim": 128,
+        "num_layers": 2,
+        "dropout": 0.0
+      },
+      "run_group": "stability",
+      "report_section": "stability",
+      "created_at_utc": "2026-04-19T19:50:54+00:00"
+    },
+    "eval_suite_path": "configs\\eval_suite.json",
+    "output_dir": "outputs\\eval",
+    "qualitative_dir": "outputs/qualitative",
+    "exported_cases": 0
+  },
+  "summary": {
+    "hard": {
+      "episodes": 100,
+      "success_rate": 0.68,
+      "collision_rate": 0.32,
+      "avg_episode_length": 6.22,
+      "time_efficiency": 0.9936163101604277,
+      "move_efficiency": 0.9904411764705882
+    }
+  }
+}

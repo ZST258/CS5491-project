@@ -1,16 +1,26 @@
 {
   "run_name": "predictive_easy_seed0_h3_main",
   "summary_type": "training",
-  "created_at_utc": "2026-03-27T14:22:03+00:00",
+  "created_at_utc": "2026-04-19T14:43:42+00:00",
   "checkpoint": "checkpoints\\predictive_easy_seed0_h3_main.pt",
   "history_path": "outputs\\train_logs\\predictive_easy_seed0_h3_main_train_history.csv",
   "logs": {
-    "aux_loss": 0.0612601600587368,
-    "loss": 2.847334146499634,
-    "policy_loss": -0.03770432248711586,
-    "value_loss": 5.793726444244385,
-    "entropy": 1.182478904724121,
-    "episode_return": -7.33388888888889
+    "returns_norm_mean": 0.9308071136474609,
+    "returns_norm_std": 1.4473313093185425,
+    "aux_loss": 0.2630803883075714,
+    "loss": 0.10997111350297928,
+    "policy_loss": -0.054154232144355774,
+    "value_loss": 0.6964694261550903,
+    "entropy": 0.49960047006607056,
+    "value_pred_mean": 0.97705078125,
+    "value_pred_std": 0.609375,
+    "value_pred_raw_mean": 7.226083755493164,
+    "value_pred_raw_std": 2.386207342147827,
+    "popart_mu": 3.4005954265594482,
+    "popart_sigma": 3.9160003662109375,
+    "returns_mean": 7.045637130737305,
+    "returns_std": 5.667749404907227,
+    "episode_return": 6.072513089005235
   },
   "metadata": {
     "run_group": "main",
@@ -23,10 +33,13 @@
     "model": "predictive",
     "difficulty": "easy",
     "seed": 0,
-    "total_timesteps": 50000,
+    "total_timesteps": 81920,
     "model_kwargs": {
       "horizon": 3,
-      "aux_coef": 0.2
+      "aux_coef": 0.2,
+      "latent_dim": 128,
+      "num_layers": 2,
+      "dropout": 0.0
     }
   }
 }

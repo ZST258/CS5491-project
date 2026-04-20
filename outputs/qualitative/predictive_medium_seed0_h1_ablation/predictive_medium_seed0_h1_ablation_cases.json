@@ -1,0 +1,73 @@
+{
+  "run_name": "predictive_medium_seed0_h1_ablation",
+  "cases": [
+    {
+      "case_name": "predictive_medium_seed0_h1_ablation_medium_success_81",
+      "run_name": "predictive_medium_seed0_h1_ablation",
+      "difficulty": "medium",
+      "episode_index": 81,
+      "case_type": "success",
+      "status": "success",
+      "failure_type": "success",
+      "assets": {
+        "json": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_success_81_rollout.json",
+        "steps_csv": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_success_81_steps.csv",
+        "frames_txt": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_success_81_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_success_81_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_success_81_summary.md",
+        "animation_gif": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_success_81_animation.gif"
+      }
+    },
+    {
+      "case_name": "predictive_medium_seed0_h1_ablation_medium_failure_63",
+      "run_name": "predictive_medium_seed0_h1_ablation",
+      "difficulty": "medium",
+      "episode_index": 63,
+      "case_type": "failure",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_failure_63_rollout.json",
+        "steps_csv": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_failure_63_steps.csv",
+        "frames_txt": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_failure_63_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_failure_63_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_failure_63_summary.md",
+        "animation_gif": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_failure_63_animation.gif"
+      }
+    },
+    {
+      "case_name": "predictive_medium_seed0_h1_ablation_medium_detour_84",
+      "run_name": "predictive_medium_seed0_h1_ablation",
+      "difficulty": "medium",
+      "episode_index": 84,
+      "case_type": "detour",
+      "status": "success",
+      "failure_type": "success",
+      "assets": {
+        "json": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_detour_84_rollout.json",
+        "steps_csv": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_detour_84_steps.csv",
+        "frames_txt": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_detour_84_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_detour_84_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_detour_84_summary.md",
+        "animation_gif": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_detour_84_animation.gif"
+      }
+    },
+    {
+      "case_name": "predictive_medium_seed0_h1_ablation_medium_closest_collision_34",
+      "run_name": "predictive_medium_seed0_h1_ablation",
+      "difficulty": "medium",
+      "episode_index": 34,
+      "case_type": "closest_collision",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_closest_collision_34_rollout.json",
+        "steps_csv": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_closest_collision_34_steps.csv",
+        "frames_txt": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_closest_collision_34_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_closest_collision_34_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_closest_collision_34_summary.md",
+        "animation_gif": "outputs\\qualitative\\predictive_medium_seed0_h1_ablation\\medium\\predictive_medium_seed0_h1_ablation_medium_closest_collision_34_animation.gif"
+      }
+    }
+  ]
+}

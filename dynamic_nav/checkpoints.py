@@ -10,6 +10,8 @@ from .models import build_model
 def load_model_checkpoint(checkpoint_path: str | Path, model_name: str, difficulty: str, device: str = "cpu"):
     payload = torch.load(Path(checkpoint_path), map_location=device)
     metadata = payload.get("metadata", {})
+    # Pass stored model kwargs through directly. Upstream (train.py) is expected to
+    # control which kwargs are present; do not mutate them here.
     model_kwargs = metadata.get("model_kwargs", {})
     model = build_model(model_name=model_name, difficulty=difficulty, device=device, **model_kwargs)
     model.load_state_dict(payload["state_dict"])

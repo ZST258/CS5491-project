@@ -1,0 +1,73 @@
+{
+  "run_name": "mlp_easy_seed0_main",
+  "cases": [
+    {
+      "case_name": "mlp_easy_seed0_main_easy_success_90",
+      "run_name": "mlp_easy_seed0_main",
+      "difficulty": "easy",
+      "episode_index": 90,
+      "case_type": "success",
+      "status": "success",
+      "failure_type": "success",
+      "assets": {
+        "json": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_success_90_rollout.json",
+        "steps_csv": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_success_90_steps.csv",
+        "frames_txt": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_success_90_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_success_90_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_success_90_summary.md",
+        "animation_gif": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_success_90_animation.gif"
+      }
+    },
+    {
+      "case_name": "mlp_easy_seed0_main_easy_failure_95",
+      "run_name": "mlp_easy_seed0_main",
+      "difficulty": "easy",
+      "episode_index": 95,
+      "case_type": "failure",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_failure_95_rollout.json",
+        "steps_csv": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_failure_95_steps.csv",
+        "frames_txt": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_failure_95_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_failure_95_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_failure_95_summary.md",
+        "animation_gif": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_failure_95_animation.gif"
+      }
+    },
+    {
+      "case_name": "mlp_easy_seed0_main_easy_detour_14",
+      "run_name": "mlp_easy_seed0_main",
+      "difficulty": "easy",
+      "episode_index": 14,
+      "case_type": "detour",
+      "status": "success",
+      "failure_type": "success",
+      "assets": {
+        "json": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_detour_14_rollout.json",
+        "steps_csv": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_detour_14_steps.csv",
+        "frames_txt": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_detour_14_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_detour_14_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_detour_14_summary.md",
+        "animation_gif": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_detour_14_animation.gif"
+      }
+    },
+    {
+      "case_name": "mlp_easy_seed0_main_easy_closest_collision_8",
+      "run_name": "mlp_easy_seed0_main",
+      "difficulty": "easy",
+      "episode_index": 8,
+      "case_type": "closest_collision",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_closest_collision_8_rollout.json",
+        "steps_csv": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_closest_collision_8_steps.csv",
+        "frames_txt": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_closest_collision_8_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_closest_collision_8_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_closest_collision_8_summary.md",
+        "animation_gif": "outputs\\qualitative\\mlp_easy_seed0_main\\easy\\mlp_easy_seed0_main_easy_closest_collision_8_animation.gif"
+      }
+    }
+  ]
+}

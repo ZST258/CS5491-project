@@ -1,0 +1,73 @@
+{
+  "run_name": "mlp_medium_seed0_main",
+  "cases": [
+    {
+      "case_name": "mlp_medium_seed0_main_medium_success_90",
+      "run_name": "mlp_medium_seed0_main",
+      "difficulty": "medium",
+      "episode_index": 90,
+      "case_type": "success",
+      "status": "success",
+      "failure_type": "success",
+      "assets": {
+        "json": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_success_90_rollout.json",
+        "steps_csv": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_success_90_steps.csv",
+        "frames_txt": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_success_90_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_success_90_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_success_90_summary.md",
+        "animation_gif": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_success_90_animation.gif"
+      }
+    },
+    {
+      "case_name": "mlp_medium_seed0_main_medium_failure_52",
+      "run_name": "mlp_medium_seed0_main",
+      "difficulty": "medium",
+      "episode_index": 52,
+      "case_type": "failure",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_failure_52_rollout.json",
+        "steps_csv": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_failure_52_steps.csv",
+        "frames_txt": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_failure_52_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_failure_52_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_failure_52_summary.md",
+        "animation_gif": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_failure_52_animation.gif"
+      }
+    },
+    {
+      "case_name": "mlp_medium_seed0_main_medium_detour_35",
+      "run_name": "mlp_medium_seed0_main",
+      "difficulty": "medium",
+      "episode_index": 35,
+      "case_type": "detour",
+      "status": "success",
+      "failure_type": "success",
+      "assets": {
+        "json": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_detour_35_rollout.json",
+        "steps_csv": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_detour_35_steps.csv",
+        "frames_txt": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_detour_35_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_detour_35_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_detour_35_summary.md",
+        "animation_gif": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_detour_35_animation.gif"
+      }
+    },
+    {
+      "case_name": "mlp_medium_seed0_main_medium_closest_collision_34",
+      "run_name": "mlp_medium_seed0_main",
+      "difficulty": "medium",
+      "episode_index": 34,
+      "case_type": "closest_collision",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_closest_collision_34_rollout.json",
+        "steps_csv": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_closest_collision_34_steps.csv",
+        "frames_txt": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_closest_collision_34_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_closest_collision_34_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_closest_collision_34_summary.md",
+        "animation_gif": "outputs\\qualitative\\mlp_medium_seed0_main\\medium\\mlp_medium_seed0_main_medium_closest_collision_34_animation.gif"
+      }
+    }
+  ]
+}

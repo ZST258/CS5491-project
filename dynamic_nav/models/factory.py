@@ -10,9 +10,11 @@ from .predictive import PredictivePolicy
 def build_model(model_name: str, difficulty: str, device: str = "cpu", **model_kwargs):
     config = DIFFICULTY_CONFIGS[difficulty]
     if model_name == "mlp":
-        return MLPPolicy(max_nodes=config.max_nodes, device=device)
+        # Pass through model-specific kwargs for consistency with other builders
+        return MLPPolicy(max_nodes=config.max_nodes, device=device, **model_kwargs)
     if model_name == "gnn":
-        return GNNPolicy(device=device)
+        return GNNPolicy(device=device, **model_kwargs)
     if model_name == "predictive":
+        # Pass through encoder-related kwargs (latent_dim, num_layers, dropout)
         return PredictivePolicy(device=device, **model_kwargs)
     raise ValueError(f"Unsupported model: {model_name}")

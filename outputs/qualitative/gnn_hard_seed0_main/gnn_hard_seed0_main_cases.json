@@ -1,0 +1,73 @@
+{
+  "run_name": "gnn_hard_seed0_main",
+  "cases": [
+    {
+      "case_name": "gnn_hard_seed0_main_hard_success_90",
+      "run_name": "gnn_hard_seed0_main",
+      "difficulty": "hard",
+      "episode_index": 90,
+      "case_type": "success",
+      "status": "success",
+      "failure_type": "success",
+      "assets": {
+        "json": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_success_90_rollout.json",
+        "steps_csv": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_success_90_steps.csv",
+        "frames_txt": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_success_90_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_success_90_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_success_90_summary.md",
+        "animation_gif": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_success_90_animation.gif"
+      }
+    },
+    {
+      "case_name": "gnn_hard_seed0_main_hard_failure_34",
+      "run_name": "gnn_hard_seed0_main",
+      "difficulty": "hard",
+      "episode_index": 34,
+      "case_type": "failure",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_failure_34_rollout.json",
+        "steps_csv": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_failure_34_steps.csv",
+        "frames_txt": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_failure_34_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_failure_34_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_failure_34_summary.md",
+        "animation_gif": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_failure_34_animation.gif"
+      }
+    },
+    {
+      "case_name": "gnn_hard_seed0_main_hard_detour_73",
+      "run_name": "gnn_hard_seed0_main",
+      "difficulty": "hard",
+      "episode_index": 73,
+      "case_type": "detour",
+      "status": "success",
+      "failure_type": "success",
+      "assets": {
+        "json": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_detour_73_rollout.json",
+        "steps_csv": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_detour_73_steps.csv",
+        "frames_txt": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_detour_73_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_detour_73_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_detour_73_summary.md",
+        "animation_gif": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_detour_73_animation.gif"
+      }
+    },
+    {
+      "case_name": "gnn_hard_seed0_main_hard_closest_collision_4",
+      "run_name": "gnn_hard_seed0_main",
+      "difficulty": "hard",
+      "episode_index": 4,
+      "case_type": "closest_collision",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_closest_collision_4_rollout.json",
+        "steps_csv": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_closest_collision_4_steps.csv",
+        "frames_txt": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_closest_collision_4_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_closest_collision_4_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_closest_collision_4_summary.md",
+        "animation_gif": "outputs\\qualitative\\gnn_hard_seed0_main\\hard\\gnn_hard_seed0_main_hard_closest_collision_4_animation.gif"
+      }
+    }
+  ]
+}

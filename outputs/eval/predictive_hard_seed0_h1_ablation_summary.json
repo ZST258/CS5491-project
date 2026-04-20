@@ -1,0 +1,44 @@
+{
+  "run_name": "predictive_hard_seed0_h1_ablation",
+  "summary_type": "evaluation",
+  "created_at_utc": "2026-04-19T16:58:41+00:00",
+  "metadata": {
+    "model": "predictive",
+    "difficulty": "hard",
+    "seed": 0,
+    "run_group": "ablation",
+    "report_section": "ablation",
+    "checkpoint_path": "checkpoints\\predictive_hard_seed0_h1_ablation.pt",
+    "checkpoint_metadata": {
+      "model": "predictive",
+      "difficulty": "hard",
+      "seed": 0,
+      "total_timesteps": 163840,
+      "run_name": "predictive_hard_seed0_h1_ablation",
+      "model_kwargs": {
+        "horizon": 1,
+        "aux_coef": 0.2,
+        "latent_dim": 128,
+        "num_layers": 2,
+        "dropout": 0.0
+      },
+      "run_group": "ablation",
+      "report_section": "ablation",
+      "created_at_utc": "2026-04-19T16:58:23+00:00"
+    },
+    "eval_suite_path": "configs\\eval_suite.json",
+    "output_dir": "outputs\\eval",
+    "qualitative_dir": "outputs/qualitative",
+    "exported_cases": 0
+  },
+  "summary": {
+    "hard": {
+      "episodes": 100,
+      "success_rate": 0.66,
+      "collision_rate": 0.34,
+      "avg_episode_length": 6.16,
+      "time_efficiency": 1.005260942760943,
+      "move_efficiency": 1.0
+    }
+  }
+}

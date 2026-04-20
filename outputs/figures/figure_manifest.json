@@ -1,14 +1,19 @@
 {
   "figures": [
-    "outputs\\figures\\collision_rate.png",
-    "outputs\\figures\\collision_rate.svg",
+    "outputs\\figures\\disagreement_a.png",
+    "outputs\\figures\\disagreement_b.png",
+    "outputs\\figures\\disagreement_c.png",
+    "outputs\\figures\\entropy.png",
     "outputs\\figures\\figure_manifest.json",
-    "outputs\\figures\\path_efficiency.png",
-    "outputs\\figures\\path_efficiency.svg",
+    "outputs\\figures\\group_ablation_metrics.png",
+    "outputs\\figures\\group_main_metrics.png",
+    "outputs\\figures\\group_stability_metrics.png",
+    "outputs\\figures\\loss_panels.png",
+    "outputs\\figures\\popart_quality.png",
+    "outputs\\figures\\qualitative_1.svg",
+    "outputs\\figures\\qualitative_2.svg",
+    "outputs\\figures\\qualitative_3.svg",
     "outputs\\figures\\qualitative_gallery.md",
-    "outputs\\figures\\success_rate.png",
-    "outputs\\figures\\success_rate.svg",
-    "outputs\\figures\\training_curve.png",
-    "outputs\\figures\\training_curve_snapshot.svg"
+    "outputs\\figures\\training_curve.png"
   ]
 }

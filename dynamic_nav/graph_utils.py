@@ -4,14 +4,21 @@ import numpy as np
 
 
 def build_knn_edge_index(positions: np.ndarray, k: int) -> np.ndarray:
-    """Return directed kNN edges for a small graph."""
     num_nodes = positions.shape[0]
     if num_nodes <= 1:
         return np.zeros((2, 0), dtype=np.int64)
-    edges: list[tuple[int, int]] = []
-    distances = np.linalg.norm(positions[:, None, :] - positions[None, :, :], axis=-1)
-    for src in range(num_nodes):
-        order = np.argsort(distances[src])
-        neighbors = [dst for dst in order if dst != src][: min(k, num_nodes - 1)]
-        edges.extend((src, dst) for dst in neighbors)
-    return np.asarray(edges, dtype=np.int64).T if edges else np.zeros((2, 0), dtype=np.int64)
+
+    k_actual = min(k, num_nodes - 1)
+    if k_actual <= 0:
+        return np.zeros((2, 0), dtype=np.int64)
+
+    # L1 distance matrix, fully vectorized.
+    distances = np.abs(positions[:, None, :] - positions[None, :, :]).sum(axis=-1)
+    np.fill_diagonal(distances, np.inf)
+
+    # Select the k nearest neighbors per node without sorting the full row.
+    knn_idx = np.argpartition(distances, kth=k_actual - 1, axis=1)[:, :k_actual]
+
+    src = np.repeat(np.arange(num_nodes, dtype=np.int64), k_actual)
+    dst = knn_idx.reshape(-1).astype(np.int64, copy=False)
+    return np.stack([src, dst], axis=0)

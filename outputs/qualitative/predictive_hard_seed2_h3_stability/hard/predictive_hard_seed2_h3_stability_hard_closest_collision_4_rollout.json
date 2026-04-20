@@ -1,0 +1,145 @@
+{
+  "difficulty": "hard",
+  "seed": 22030,
+  "grid_size": 12,
+  "goal": [
+    3,
+    7
+  ],
+  "agent_start": [
+    4,
+    10
+  ],
+  "obstacle_starts": [
+    [
+      8,
+      8
+    ],
+    [
+      3,
+      1
+    ],
+    [
+      0,
+      5
+    ],
+    [
+      11,
+      3
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      11,
+      8
+    ],
+    [
+      10,
+      3
+    ],
+    [
+      0,
+      3
+    ],
+    [
+      5,
+      9
+    ],
+    [
+      7,
+      2
+    ]
+  ],
+  "oracle_length": 5,
+  "status": "collision",
+  "failure_type": "late_avoidance",
+  "path_length": 1,
+  "episode_length": 1,
+  "turning_points": [
+    {
+      "step": 1,
+      "reasons": [
+        "near_obstacle"
+      ],
+      "status": "collision"
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "from_pos": [
+        4,
+        10
+      ],
+      "to_pos": [
+        4,
+        9
+      ],
+      "action": 3,
+      "action_name": "left",
+      "reward": -10.13,
+      "status": "collision",
+      "path_length": 1,
+      "min_obstacle_distance": 0.0,
+      "goal_distance": 3,
+      "obstacles": [
+        [
+          7,
+          8
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          11,
+          4
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          11,
+          7
+        ],
+        [
+          10,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          4,
+          9
+        ],
+        [
+          8,
+          2
+        ]
+      ]
+    }
+  ],
+  "frames": [
+    "Step 0\n. . . X . X . . . . . .\n. X . . . . . . . . . .\n. . . . . . . . . . . .\n. X . . . . . G . . . .\n. . . . . . . . . . A .\n. . . . . . . . . X . .\n. . . . . . . . . . . .\n. . X . . . . . . . . .\n. . . . . . . . X . . .\n. . . . . . . . . . . .\n. . . X . . . . . . . .\n. . . X . . . . X . . .",
+    "Step 1 [left]\n. . . X . . . . . . . .\n. . X . . X . . . . . .\n. . . . . . . . . . . .\n. X . . . . . G . . . .\n. . . . . . . . . X . .\n. . . . . . . . . . . .\n. . . . . . . . . . . .\n. . . . . . . . X . . .\n. . X . . . . . . . . .\n. . . . . . . . . . . .\n. . X . . . . . . . . .\n. . . . X . . X . . . ."
+  ],
+  "agent_positions": [
+    [
+      4,
+      10
+    ],
+    [
+      4,
+      9
+    ]
+  ]
+}

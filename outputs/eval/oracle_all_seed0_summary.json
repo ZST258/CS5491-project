@@ -1,7 +1,7 @@
 {
   "run_name": "oracle_all_seed0",
   "summary_type": "evaluation",
-  "created_at_utc": "2026-03-27T11:08:23+00:00",
+  "created_at_utc": "2026-04-20T07:32:37+00:00",
   "metadata": {
     "model": "oracle",
     "difficulty": "all",
@@ -21,21 +21,24 @@
       "success_rate": 1.0,
       "collision_rate": 0.0,
       "avg_episode_length": 5.58,
-      "path_efficiency": 1.0
+      "time_efficiency": 1.0,
+      "move_efficiency": 0.9766031746031746
     },
     "medium": {
       "episodes": 100,
       "success_rate": 1.0,
       "collision_rate": 0.0,
       "avg_episode_length": 6.46,
-      "path_efficiency": 1.0
+      "time_efficiency": 1.0,
+      "move_efficiency": 0.9922145354645354
     },
     "hard": {
       "episodes": 100,
       "success_rate": 1.0,
       "collision_rate": 0.0,
       "avg_episode_length": 7.86,
-      "path_efficiency": 1.0
+      "time_efficiency": 1.0,
+      "move_efficiency": 0.9868498168498168
     }
   }
 }

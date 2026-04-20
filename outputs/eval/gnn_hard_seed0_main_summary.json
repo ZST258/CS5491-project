@@ -1,7 +1,7 @@
 {
   "run_name": "gnn_hard_seed0_main",
   "summary_type": "evaluation",
-  "created_at_utc": "2026-03-27T11:55:52+00:00",
+  "created_at_utc": "2026-04-19T12:53:30+00:00",
   "metadata": {
     "model": "gnn",
     "difficulty": "hard",
@@ -18,7 +18,7 @@
       "model_kwargs": {},
       "run_group": "main",
       "report_section": "main_results",
-      "created_at_utc": "2026-03-27T11:55:39+00:00"
+      "created_at_utc": "2026-04-19T12:53:12+00:00"
     },
     "eval_suite_path": "configs\\eval_suite.json",
     "output_dir": "outputs\\eval",
@@ -28,10 +28,11 @@
   "summary": {
     "hard": {
       "episodes": 100,
-      "success_rate": 0.02,
-      "collision_rate": 0.73,
-      "avg_episode_length": 25.54,
-      "path_efficiency": 1.0
+      "success_rate": 0.53,
+      "collision_rate": 0.47,
+      "avg_episode_length": 8.9,
+      "time_efficiency": 0.9251703974475608,
+      "move_efficiency": 0.9213586955226514
     }
   }
 }

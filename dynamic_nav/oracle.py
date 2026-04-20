@@ -88,6 +88,29 @@ def oracle_shortest_path_length(spec: EpisodeSpec, dynamic: bool = True) -> int 
     return max(len(path) - 1, 0)
 
 
+def oracle_move_count_from_path(path: list[tuple[int, int]] | None) -> int | None:
+    """
+    Given a time-expanded path (list of positions by time), compute the number
+    of actual position changes (move count). Returns None if path is None.
+    """
+    if path is None:
+        return None
+    if not path:
+        return 0
+    moves = 0
+    prev = path[0]
+    for p in path[1:]:
+        if p != prev:
+            moves += 1
+        prev = p
+    return moves
+
+
+def oracle_move_count(spec: EpisodeSpec, dynamic: bool = True) -> int | None:
+    path = time_expanded_a_star(spec, dynamic=dynamic)
+    return oracle_move_count_from_path(path)
+
+
 def _heuristic(start: tuple[int, int], goal: tuple[int, int]) -> int:
     return abs(start[0] - goal[0]) + abs(start[1] - goal[1])
 

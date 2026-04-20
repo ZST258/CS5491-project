@@ -1,0 +1,73 @@
+{
+  "run_name": "gnn_medium_seed0_main",
+  "cases": [
+    {
+      "case_name": "gnn_medium_seed0_main_medium_success_50",
+      "run_name": "gnn_medium_seed0_main",
+      "difficulty": "medium",
+      "episode_index": 50,
+      "case_type": "success",
+      "status": "success",
+      "failure_type": "success",
+      "assets": {
+        "json": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_success_50_rollout.json",
+        "steps_csv": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_success_50_steps.csv",
+        "frames_txt": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_success_50_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_success_50_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_success_50_summary.md",
+        "animation_gif": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_success_50_animation.gif"
+      }
+    },
+    {
+      "case_name": "gnn_medium_seed0_main_medium_failure_39",
+      "run_name": "gnn_medium_seed0_main",
+      "difficulty": "medium",
+      "episode_index": 39,
+      "case_type": "failure",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_failure_39_rollout.json",
+        "steps_csv": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_failure_39_steps.csv",
+        "frames_txt": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_failure_39_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_failure_39_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_failure_39_summary.md",
+        "animation_gif": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_failure_39_animation.gif"
+      }
+    },
+    {
+      "case_name": "gnn_medium_seed0_main_medium_detour_41",
+      "run_name": "gnn_medium_seed0_main",
+      "difficulty": "medium",
+      "episode_index": 41,
+      "case_type": "detour",
+      "status": "success",
+      "failure_type": "success",
+      "assets": {
+        "json": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_detour_41_rollout.json",
+        "steps_csv": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_detour_41_steps.csv",
+        "frames_txt": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_detour_41_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_detour_41_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_detour_41_summary.md",
+        "animation_gif": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_detour_41_animation.gif"
+      }
+    },
+    {
+      "case_name": "gnn_medium_seed0_main_medium_closest_collision_34",
+      "run_name": "gnn_medium_seed0_main",
+      "difficulty": "medium",
+      "episode_index": 34,
+      "case_type": "closest_collision",
+      "status": "collision",
+      "failure_type": "late_avoidance",
+      "assets": {
+        "json": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_closest_collision_34_rollout.json",
+        "steps_csv": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_closest_collision_34_steps.csv",
+        "frames_txt": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_closest_collision_34_frames.txt",
+        "trajectory_svg": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_closest_collision_34_trajectory.svg",
+        "summary_md": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_closest_collision_34_summary.md",
+        "animation_gif": "outputs\\qualitative\\gnn_medium_seed0_main\\medium\\gnn_medium_seed0_main_medium_closest_collision_34_animation.gif"
+      }
+    }
+  ]
+}

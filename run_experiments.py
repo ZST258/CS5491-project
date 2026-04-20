@@ -7,6 +7,22 @@ import sys
 from pathlib import Path
 
 from dynamic_nav.reporting import utc_now_iso, write_json
+import sys
+try:
+    from tqdm import tqdm
+except Exception:
+    # fallback simple tqdm-like generator
+    def tqdm(iterable=None, total=None, desc=None):
+        if iterable is None:
+            iterable = []
+        n = total if total is not None else len(iterable)
+        i = 0
+        for it in iterable:
+            i += 1
+            sys.stdout.write(f"\r{desc or 'Progress'}: {i}/{n}")
+            sys.stdout.flush()
+            yield it
+        print()
 
 
 def parse_args():
@@ -57,11 +73,73 @@ def build_train_command(run: dict, python_exe: str, layout: dict, device: str | 
         "--report-section",
         run["report_section"],
     ]
+    # pass model-specific kwargs to train.py (converted to CLI flags)
     model_kwargs = run.get("model_kwargs", {})
-    if "horizon" in model_kwargs:
-        command.extend(["--horizon", str(model_kwargs["horizon"])])
-    if "aux_coef" in model_kwargs:
-        command.extend(["--aux-coef", str(model_kwargs["aux_coef"])])
+    for k, v in model_kwargs.items():
+        # knn_k is now read from dynamic_nav.config by models; do not pass it via CLI
+        if k == "knn_k":
+            continue
+        flag = f"--{k.replace('_', '-') }"
+        # booleans handled as flags
+        if isinstance(v, bool):
+            if v:
+                command.append(flag)
+        else:
+            command.extend([flag, str(v)])
+    # support per-run PPO overrides via a ppo_config dict; total_timesteps
+    # stays at the run root because it defines experiment length, not PPO internals.
+    ppo_cfg = run.get("ppo_config", {})
+    # mapping from ppo cfg keys to CLI flags (train.py)
+    # Note: total_timesteps is expected at the top-level run entry and is
+    # already added to the command earlier. Do not include it here to avoid
+    # duplicating the flag. If total_timesteps appears inside ppo_config it
+    # will be ignored below.
+    ppo_map = {
+        "rollout_steps": "--rollout-steps",
+        "update_epochs": "--update-epochs",
+        "minibatch_size": "--minibatch-size",
+        "gamma": "--gamma",
+        "gae_lambda": "--gae-lambda",
+        "learning_rate": "--learning-rate",
+        "policy_lr": "--policy-lr",
+        "value_lr": "--value-lr",
+        "clip_coef": "--clip-coef",
+        # clip_range_vf removed: incompatible with PopArt; if present in
+        # experiment configs we will warn and ignore it below.
+        "target_kl": "--target-kl",
+        "value_coef": "--value-coef",
+        "entropy_coef": "--entropy-coef",
+        "max_grad_norm": "--max-grad-norm",
+        "log_interval": "--log-interval",
+        "lr_schedule": "--lr-schedule",
+        # normalize_returns removed from PPOConfig; if present in configs,
+        # we warn and skip it below
+        "value_weight_decay": "--value-weight-decay",
+        "popart_beta": "--popart-beta",
+        "popart_eps": "--popart-eps",
+        "popart_min_sigma": "--popart-min-sigma",
+        "aux_warmup_percent": "--aux-warmup-percent",
+    }
+    if ppo_cfg:
+        for k, v in ppo_cfg.items():
+            # skip explicit nulls
+            if v is None:
+                continue
+            # total_timesteps is specified at the top-level run entry; if it
+            # mistakenly appears in ppo_config we skip it to avoid duplicating
+            # the --total-timesteps flag.
+            if k == "total_timesteps":
+                continue
+            flag = ppo_map.get(k)
+            if not flag:
+                print(f"Warning: unknown or deprecated PPO field '{k}' in ppo_config for run {run.get('run_name')}; skipping it")
+                continue
+            if isinstance(v, bool):
+                # boolean flags are represented by presence only
+                if v:
+                    command.append(flag)
+            else:
+                command.extend([flag, str(v)])
     if device:
         command.extend(["--device", device])
     return command
@@ -101,6 +179,30 @@ def build_eval_command(run: dict, python_exe: str, layout: dict, device: str | N
     return command
 
 
+def build_export_rollouts_command(run: dict, python_exe: str, layout: dict, device: str | None, args) -> list[str]:
+    command = [
+        python_exe,
+        "export_rollouts.py",
+        "--model",
+        run["model"],
+        "--difficulty",
+        run["difficulty"],
+        "--run-name",
+        run["run_name"],
+        "--eval-suite",
+        layout.get("eval_suite", "configs/eval_suite.json"),
+        "--output-dir",
+        layout["qualitative_outputs"],
+    ]
+    command.extend(["--case-limit", str(args.case_limit)])
+    command.extend(["--case-types", *args.case_types])
+    if run["model"] != "oracle":
+        command.extend(["--checkpoint-dir", layout["checkpoints"]])
+    if device:
+        command.extend(["--device", device])
+    return command
+
+
 def expected_outputs_exist(run: dict) -> bool:
     expected_outputs = run.get("expected_outputs", [])
     return bool(expected_outputs) and all(Path(path).exists() for path in expected_outputs)
@@ -118,6 +220,7 @@ def manifest_entry(run: dict, commands: list[list[str]]) -> dict:
         "seed": run["seed"],
         "horizon": model_kwargs.get("horizon"),
         "aux_coef": model_kwargs.get("aux_coef"),
+        # knn_k removed: models now obtain knn_k from dynamic_nav.config
         "total_timesteps": run.get("total_timesteps"),
         "expected_outputs": run.get("expected_outputs", []),
         "existing_outputs": [path for path in run.get("expected_outputs", []) if Path(path).exists()],
@@ -152,11 +255,16 @@ def main():
             continue
         selected.append(run)
     manifest = []
-    for run in selected:
+    # iterate with progress bar
+    for run in tqdm(selected, total=len(selected), desc="runs"):
         commands = []
         if run["kind"] == "train_eval":
             commands.append(build_train_command(run, args.python, layout, args.device))
+        # always run evaluation
         commands.append(build_eval_command(run, args.python, layout, args.device, args))
+        # For the oracle (a pure eval model), skip exporting rollouts — stop after eval
+        if run.get("model") != "oracle":
+            commands.append(build_export_rollouts_command(run, args.python, layout, args.device, args))
         entry = manifest_entry(run, commands)
         entry["status"] = "skipped_existing" if args.skip_existing and expected_outputs_exist(run) else "pending"
         manifest.append(entry)

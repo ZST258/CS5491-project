@@ -7,12 +7,13 @@ from pathlib import Path
 
 import numpy as np
 import torch
+import shutil
 
 from dynamic_nav.checkpoints import load_model_checkpoint
 from dynamic_nav.datasets import load_eval_suite, save_eval_suite
 from dynamic_nav.env import DynamicNavigationEnv
 from dynamic_nav.metrics import EpisodeMetrics, summarize_metrics
-from dynamic_nav.oracle import oracle_shortest_path_length, time_expanded_a_star
+from dynamic_nav.oracle import oracle_shortest_path_length, time_expanded_a_star, oracle_move_count
 from dynamic_nav.qualitative import export_case_manifest, export_rollout_assets, replay_episode, select_case_indices
 from dynamic_nav.reporting import utc_now_iso, write_json
 
@@ -60,8 +61,10 @@ def evaluate_oracle(spec):
             path_length=0,
             oracle_length=None,
             episode_length=spec.max_steps,
+            oracle_move_count=None,
         )
     path_length = max(len(oracle_path) - 1, 0)
+    move_count = oracle_move_count_from_path = oracle_move_count(spec, dynamic=True)
     return EpisodeMetrics(
         success=True,
         collision=False,
@@ -69,6 +72,7 @@ def evaluate_oracle(spec):
         path_length=path_length,
         oracle_length=path_length,
         episode_length=path_length,
+        oracle_move_count=move_count,
     )
 
 
@@ -84,6 +88,7 @@ def evaluate_policy(model, spec):
         done = terminated or truncated
         steps += 1
     oracle_length = oracle_shortest_path_length(spec, dynamic=True)
+    move_count = oracle_move_count(spec, dynamic=True)
     return EpisodeMetrics(
         success=info["status"] == "success",
         collision=info["status"] == "collision",
@@ -91,6 +96,7 @@ def evaluate_policy(model, spec):
         path_length=info["path_length"],
         oracle_length=oracle_length,
         episode_length=steps,
+        oracle_move_count=move_count,
     )
 
 
@@ -132,7 +138,9 @@ def main():
                     "path_length": metrics.path_length,
                     "oracle_length": metrics.oracle_length if metrics.oracle_length is not None else "",
                     "episode_length": metrics.episode_length,
-                    "path_efficiency": metrics.path_efficiency if metrics.path_efficiency is not None else "",
+                    # clearer metrics
+                    "time_efficiency": metrics.time_efficiency if metrics.time_efficiency is not None else "",
+                    "move_efficiency": metrics.move_efficiency if metrics.move_efficiency is not None else "",
                 }
             )
         summary[difficulty] = summarize_metrics(episodes)
@@ -166,6 +174,24 @@ def main():
     cases_manifest = (
         export_case_manifest(run_name, exported_cases, Path(args.qualitative_dir) / run_name) if args.export_cases else None
     )
+    # Archive existing summary and episode CSVs if present
+    try:
+        archive_root = Path("outputs") / "archive"
+        archive_eval = archive_root / "eval"
+        archive_eval.mkdir(parents=True, exist_ok=True)
+        ts = utc_now_iso().replace(":", "").replace("-", "").replace("T", "_").replace("Z", "")
+        if summary_path.exists():
+            dest = archive_eval / f"{run_name}_summary_{ts}.json"
+            shutil.copy2(str(summary_path), str(dest))
+        # archive per-difficulty CSVs
+        for difficulty in ( [args.difficulty] if args.difficulty != "all" else ["easy","medium","hard"] ):
+            csv_path = output_dir / f"{run_name}_{difficulty}_episodes.csv"
+            if csv_path.exists():
+                dest = archive_eval / f"{run_name}_{difficulty}_episodes_{ts}.csv"
+                shutil.copy2(str(csv_path), str(dest))
+    except Exception:
+        print("Warning: failed to archive existing eval outputs")
+
     payload = {
         "run_name": run_name,
         "summary_type": "evaluation",

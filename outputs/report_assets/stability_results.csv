@@ -1,2 +1,4 @@
-run_name,group,report_section,model,difficulty,seed,horizon,label,success_rate,collision_rate,path_efficiency,avg_episode_length
-predictive_hard_seed0_h3_main,main,main_results,predictive,hard,0,3,predictive_h3,0.07,0.62,1.0129870129870129,27.24
+run_name,group,report_section,model,difficulty,seed,horizon,label,success_rate,collision_rate,time_efficiency,move_efficiency,avg_episode_length
+predictive_hard_seed0_h3_main,main,main_results,predictive,hard,0,3,predictive_h3,0.71,0.29,0.9958031014369043,0.991549295774648,6.27
+predictive_hard_seed1_h3_stability,stability,stability,predictive,hard,1,3,predictive_h3,0.68,0.32,0.9936163101604277,0.9904411764705882,6.22
+predictive_hard_seed2_h3_stability,stability,stability,predictive,hard,2,3,predictive_h3,0.68,0.32,0.9740084670231729,0.9708333333333333,6.43

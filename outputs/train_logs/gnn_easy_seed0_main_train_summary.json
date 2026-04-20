@@ -1,16 +1,25 @@
 {
   "run_name": "gnn_easy_seed0_main",
   "summary_type": "training",
-  "created_at_utc": "2026-03-27T11:25:32+00:00",
+  "created_at_utc": "2026-04-19T14:00:55+00:00",
   "checkpoint": "checkpoints\\gnn_easy_seed0_main.pt",
   "history_path": "outputs\\train_logs\\gnn_easy_seed0_main_train_history.csv",
   "logs": {
-    "loss": 3.5916643142700195,
-    "policy_loss": 0.001982487738132477,
-    "value_loss": 7.193459510803223,
-    "entropy": 0.7047879695892334,
-    "aux_loss": 0.0,
-    "episode_return": -0.5933333333333334
+    "returns_norm_mean": 1.9497082233428955,
+    "returns_norm_std": 0.8942918181419373,
+    "loss": 0.1283547580242157,
+    "policy_loss": -0.014996187761425972,
+    "value_loss": 0.6112438440322876,
+    "entropy": 0.9460022449493408,
+    "value_pred_mean": 1.2978515625,
+    "value_pred_std": 0.40576171875,
+    "value_pred_raw_mean": 5.592606544494629,
+    "value_pred_raw_std": 1.540770411491394,
+    "popart_mu": 0.6648052930831909,
+    "popart_sigma": 3.79801869392395,
+    "returns_mean": 8.069833755493164,
+    "returns_std": 3.3965368270874023,
+    "episode_return": 7.520000000000001
   },
   "metadata": {
     "run_group": "main",
@@ -24,6 +33,10 @@
     "difficulty": "easy",
     "seed": 0,
     "total_timesteps": 40000,
-    "model_kwargs": {}
+    "model_kwargs": {
+      "latent_dim": 128,
+      "num_layers": 2,
+      "dropout": 0.0
+    }
   }
 }

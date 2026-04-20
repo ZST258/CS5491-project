@@ -1,16 +1,25 @@
 {
   "run_name": "gnn_hard_seed0_main",
   "summary_type": "training",
-  "created_at_utc": "2026-03-27T11:55:39+00:00",
+  "created_at_utc": "2026-04-19T12:53:12+00:00",
   "checkpoint": "checkpoints\\gnn_hard_seed0_main.pt",
   "history_path": "outputs\\train_logs\\gnn_hard_seed0_main_train_history.csv",
   "logs": {
-    "loss": 0.4833168089389801,
-    "policy_loss": 0.057054899632930756,
-    "value_loss": 0.8707550168037415,
-    "entropy": 0.9115618467330933,
-    "aux_loss": 0.0,
-    "episode_return": -13.576666666666668
+    "returns_norm_mean": 0.589473307132721,
+    "returns_norm_std": 1.7145259380340576,
+    "loss": 0.18439075350761414,
+    "policy_loss": -0.02723878063261509,
+    "value_loss": 0.8794539570808411,
+    "entropy": 0.8233950138092041,
+    "value_pred_mean": 0.8095703125,
+    "value_pred_std": 0.740234375,
+    "value_pred_raw_mean": 1.1149283647537231,
+    "value_pred_raw_std": 3.647645950317383,
+    "popart_mu": -2.874892234802246,
+    "popart_sigma": 4.928712844848633,
+    "returns_mean": 0.030452460050582886,
+    "returns_std": 8.45040512084961,
+    "episode_return": -1.8482352941176472
   },
   "metadata": {
     "run_group": "main",

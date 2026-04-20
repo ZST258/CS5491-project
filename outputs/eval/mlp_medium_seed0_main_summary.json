@@ -1,7 +1,7 @@
 {
   "run_name": "mlp_medium_seed0_main",
   "summary_type": "evaluation",
-  "created_at_utc": "2026-03-27T11:12:54+00:00",
+  "created_at_utc": "2026-04-20T07:13:39+00:00",
   "metadata": {
     "model": "mlp",
     "difficulty": "medium",
@@ -13,12 +13,12 @@
       "model": "mlp",
       "difficulty": "medium",
       "seed": 0,
-      "total_timesteps": 50000,
+      "total_timesteps": 45000,
       "run_name": "mlp_medium_seed0_main",
       "model_kwargs": {},
       "run_group": "main",
       "report_section": "main_results",
-      "created_at_utc": "2026-03-27T11:12:47+00:00"
+      "created_at_utc": "2026-04-20T07:13:30+00:00"
     },
     "eval_suite_path": "configs\\eval_suite.json",
     "output_dir": "outputs\\eval",
@@ -28,10 +28,11 @@
   "summary": {
     "medium": {
       "episodes": 100,
-      "success_rate": 0.12,
-      "collision_rate": 0.53,
-      "avg_episode_length": 23.23,
-      "path_efficiency": 1.0
+      "success_rate": 0.24,
+      "collision_rate": 0.47,
+      "avg_episode_length": 20.82,
+      "time_efficiency": 0.8812374546749546,
+      "move_efficiency": 0.8854441854441855
     }
   }
 }

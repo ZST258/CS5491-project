@@ -1,0 +1,45 @@
+{
+  "run_name": "predictive_medium_seed0_h1_ablation",
+  "summary_type": "training",
+  "created_at_utc": "2026-04-19T16:12:05+00:00",
+  "checkpoint": "checkpoints\\predictive_medium_seed0_h1_ablation.pt",
+  "history_path": "outputs\\train_logs\\predictive_medium_seed0_h1_ablation_train_history.csv",
+  "logs": {
+    "returns_norm_mean": 0.4336855411529541,
+    "returns_norm_std": 1.2907953262329102,
+    "aux_loss": 0.27729931473731995,
+    "loss": 0.2862910032272339,
+    "policy_loss": 0.11218910664319992,
+    "value_loss": 0.7405259013175964,
+    "entropy": 0.5514793395996094,
+    "value_pred_mean": 0.4814453125,
+    "value_pred_std": 0.62109375,
+    "value_pred_raw_mean": 5.901242256164551,
+    "value_pred_raw_std": 3.261245012283325,
+    "popart_mu": 3.3724513053894043,
+    "popart_sigma": 5.2513508796691895,
+    "returns_mean": 5.649886131286621,
+    "returns_std": 6.778419494628906,
+    "episode_return": 4.177323529411765
+  },
+  "metadata": {
+    "run_group": "ablation",
+    "report_section": "ablation",
+    "device": "cuda",
+    "checkpoint_path": "checkpoints\\predictive_medium_seed0_h1_ablation.pt",
+    "history_path": "outputs\\train_logs\\predictive_medium_seed0_h1_ablation_train_history.csv"
+  },
+  "config": {
+    "model": "predictive",
+    "difficulty": "medium",
+    "seed": 0,
+    "total_timesteps": 122880,
+    "model_kwargs": {
+      "horizon": 1,
+      "aux_coef": 0.2,
+      "latent_dim": 128,
+      "num_layers": 2,
+      "dropout": 0.0
+    }
+  }
+}

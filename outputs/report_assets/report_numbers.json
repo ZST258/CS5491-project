@@ -2,117 +2,148 @@
   "main": {
     "easy": {
       "gnn": {
-        "success_rate": 0.14,
-        "collision_rate": 0.35,
-        "path_efficiency": 1.0,
-        "avg_episode_length": 18.85
+        "success_rate": 0.63,
+        "collision_rate": 0.29,
+        "time_efficiency": 0.9852859662383472,
+        "move_efficiency": 0.9794658604182415,
+        "avg_episode_length": 7.51
       },
       "mlp": {
-        "success_rate": 0.08,
-        "collision_rate": 0.39,
-        "path_efficiency": 1.0,
-        "avg_episode_length": 20.05
+        "success_rate": 0.47,
+        "collision_rate": 0.24,
+        "time_efficiency": 0.8650721782368034,
+        "move_efficiency": 0.8607738760661607,
+        "avg_episode_length": 14.12
       },
       "oracle": {
         "success_rate": 1.0,
         "collision_rate": 0.0,
-        "path_efficiency": 1.0,
+        "time_efficiency": 1.0,
+        "move_efficiency": 0.9766031746031746,
         "avg_episode_length": 5.58
       },
       "predictive": {
-        "success_rate": 0.14,
-        "collision_rate": 0.48,
-        "path_efficiency": 0.8833333333333334,
-        "avg_episode_length": 18.51
+        "success_rate": 0.81,
+        "collision_rate": 0.19,
+        "time_efficiency": 0.9705636613044021,
+        "move_efficiency": 0.9639792991644843,
+        "avg_episode_length": 5.07
       }
     },
     "medium": {
       "gnn": {
-        "success_rate": 0.09,
-        "collision_rate": 0.58,
-        "path_efficiency": 1.0,
-        "avg_episode_length": 22.58
+        "success_rate": 0.63,
+        "collision_rate": 0.23,
+        "time_efficiency": 0.9619926590164685,
+        "move_efficiency": 0.961000595524405,
+        "avg_episode_length": 13.33
       },
       "mlp": {
-        "success_rate": 0.12,
-        "collision_rate": 0.53,
-        "path_efficiency": 1.0,
-        "avg_episode_length": 23.23
+        "success_rate": 0.24,
+        "collision_rate": 0.47,
+        "time_efficiency": 0.8812374546749546,
+        "move_efficiency": 0.8854441854441855,
+        "avg_episode_length": 20.82
       },
       "oracle": {
         "success_rate": 1.0,
         "collision_rate": 0.0,
-        "path_efficiency": 1.0,
+        "time_efficiency": 1.0,
+        "move_efficiency": 0.9922145354645354,
         "avg_episode_length": 6.46
       },
       "predictive": {
-        "success_rate": 0.03,
-        "collision_rate": 0.52,
-        "path_efficiency": 1.0,
-        "avg_episode_length": 26.16
+        "success_rate": 0.83,
+        "collision_rate": 0.17,
+        "time_efficiency": 1.0080321285140563,
+        "move_efficiency": 1.0048192771084339,
+        "avg_episode_length": 5.63
       }
     },
     "hard": {
       "gnn": {
-        "success_rate": 0.02,
-        "collision_rate": 0.73,
-        "path_efficiency": 1.0,
-        "avg_episode_length": 25.54
+        "success_rate": 0.53,
+        "collision_rate": 0.47,
+        "time_efficiency": 0.9251703974475608,
+        "move_efficiency": 0.9213586955226514,
+        "avg_episode_length": 8.9
       },
       "mlp": {
-        "success_rate": 0.02,
-        "collision_rate": 0.73,
-        "path_efficiency": 1.0,
-        "avg_episode_length": 25.54
+        "success_rate": 0.2,
+        "collision_rate": 0.67,
+        "time_efficiency": 0.8990476190476191,
+        "move_efficiency": 0.8990476190476191,
+        "avg_episode_length": 22.57
       },
       "oracle": {
         "success_rate": 1.0,
         "collision_rate": 0.0,
-        "path_efficiency": 1.0,
+        "time_efficiency": 1.0,
+        "move_efficiency": 0.9868498168498168,
         "avg_episode_length": 7.86
       },
       "predictive": {
-        "success_rate": 0.07,
-        "collision_rate": 0.62,
-        "path_efficiency": 1.0129870129870129,
-        "avg_episode_length": 27.24
+        "success_rate": 0.71,
+        "collision_rate": 0.29,
+        "time_efficiency": 0.9958031014369043,
+        "move_efficiency": 0.991549295774648,
+        "avg_episode_length": 6.27
       }
     }
   },
   "ablation": {
     "medium": {
       "gnn": {
-        "success_rate": 0.09,
-        "collision_rate": 0.58,
-        "path_efficiency": 1.0,
-        "avg_episode_length": 22.58
+        "success_rate": 0.63,
+        "collision_rate": 0.23,
+        "time_efficiency": 0.9619926590164685,
+        "move_efficiency": 0.961000595524405,
+        "avg_episode_length": 13.33
+      },
+      "predictive_h1": {
+        "success_rate": 0.84,
+        "collision_rate": 0.16,
+        "time_efficiency": 0.9804639804639805,
+        "move_efficiency": 0.9772893772893774,
+        "avg_episode_length": 5.86
       }
     },
     "hard": {
       "gnn": {
-        "success_rate": 0.02,
-        "collision_rate": 0.73,
-        "path_efficiency": 1.0,
-        "avg_episode_length": 25.54
+        "success_rate": 0.53,
+        "collision_rate": 0.47,
+        "time_efficiency": 0.9251703974475608,
+        "move_efficiency": 0.9213586955226514,
+        "avg_episode_length": 8.9
+      },
+      "predictive_h1": {
+        "success_rate": 0.66,
+        "collision_rate": 0.34,
+        "time_efficiency": 1.005260942760943,
+        "move_efficiency": 1.0,
+        "avg_episode_length": 6.16
       }
     }
   },
   "stability": {
     "hard": {
       "label": "predictive_h3",
-      "count": 1,
-      "success_rate_mean": 0.07,
-      "success_rate_min": 0.07,
-      "success_rate_max": 0.07,
-      "collision_rate_mean": 0.62,
-      "collision_rate_min": 0.62,
-      "collision_rate_max": 0.62,
-      "path_efficiency_mean": 1.0129870129870129,
-      "path_efficiency_min": 1.0129870129870129,
-      "path_efficiency_max": 1.0129870129870129,
-      "avg_episode_length_mean": 27.24,
-      "avg_episode_length_min": 27.24,
-      "avg_episode_length_max": 27.24
+      "count": 3,
+      "success_rate_mean": 0.6900000000000001,
+      "success_rate_min": 0.68,
+      "success_rate_max": 0.71,
+      "collision_rate_mean": 0.31,
+      "collision_rate_min": 0.29,
+      "collision_rate_max": 0.32,
+      "time_efficiency_mean": 0.9878092928735016,
+      "time_efficiency_min": 0.9740084670231729,
+      "time_efficiency_max": 0.9958031014369043,
+      "move_efficiency_mean": 0.9842746018595232,
+      "move_efficiency_min": 0.9708333333333333,
+      "move_efficiency_max": 0.991549295774648,
+      "avg_episode_length_mean": 6.306666666666667,
+      "avg_episode_length_min": 6.22,
+      "avg_episode_length_max": 6.43
     }
   },
   "paths": {

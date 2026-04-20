@@ -1,16 +1,25 @@
 {
   "run_name": "mlp_hard_seed0_main",
   "summary_type": "training",
-  "created_at_utc": "2026-03-27T11:17:11+00:00",
+  "created_at_utc": "2026-04-20T06:53:52+00:00",
   "checkpoint": "checkpoints\\mlp_hard_seed0_main.pt",
   "history_path": "outputs\\train_logs\\mlp_hard_seed0_main_train_history.csv",
   "logs": {
-    "loss": 0.46995753049850464,
-    "policy_loss": 0.11633496731519699,
-    "value_loss": 0.7156402468681335,
-    "entropy": 0.4197569787502289,
-    "aux_loss": 0.0,
-    "episode_return": -14.325
+    "returns_norm_mean": -0.3910786211490631,
+    "returns_norm_std": 1.1741681098937988,
+    "loss": 0.16965629160404205,
+    "policy_loss": 0.11359263956546783,
+    "value_loss": 0.26405447721481323,
+    "entropy": 0.9949964880943298,
+    "value_pred_mean": -0.369384765625,
+    "value_pred_std": 0.74853515625,
+    "value_pred_raw_mean": -7.147100448608398,
+    "value_pred_raw_std": 2.7913737297058105,
+    "popart_mu": -5.768874645233154,
+    "popart_sigma": 3.7301559448242188,
+    "returns_mean": -7.227658748626709,
+    "returns_std": 4.3798298835754395,
+    "episode_return": -9.360270270270272
   },
   "metadata": {
     "run_group": "main",
@@ -23,7 +32,7 @@
     "model": "mlp",
     "difficulty": "hard",
     "seed": 0,
-    "total_timesteps": 70000,
+    "total_timesteps": 60000,
     "model_kwargs": {}
   }
 }

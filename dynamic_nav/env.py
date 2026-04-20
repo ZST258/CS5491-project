@@ -39,7 +39,7 @@ class DynamicNavigationEnv(gym.Env):
                     shape=(self.config.max_nodes, NODE_FEATURE_DIM),
                     dtype=np.float32,
                 ),
-                "edge_index": spaces.Box(low=0, high=self.config.max_nodes, shape=(2, self.config.max_nodes * self.config.knn_k), dtype=np.int64),
+                "edge_index": spaces.Box(low=-1, high=self.config.max_nodes, shape=(2, self.config.max_nodes * self.config.knn_k), dtype=np.int64),
                 "global_features": spaces.Box(low=0.0, high=1.0, shape=(GLOBAL_FEATURE_DIM,), dtype=np.float32),
                 "action_mask": spaces.Box(low=0.0, high=1.0, shape=(NUM_ACTIONS,), dtype=np.float32),
             }
@@ -51,6 +51,8 @@ class DynamicNavigationEnv(gym.Env):
         self.obstacles: list[ObstacleSpec] = []
         self.step_count = 0
         self.last_path_length = 0
+        self._last_goal_dist: int = 0
+        self._prev_agent_pos: tuple[int, int] | None = None
 
     def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None):
         if seed is not None:
@@ -67,12 +69,18 @@ class DynamicNavigationEnv(gym.Env):
         self.obstacles = deepcopy(self.current_spec.obstacles)
         self.step_count = 0
         self.last_path_length = 0
+        self._prev_agent_pos = self.agent_pos
+        self._last_goal_dist = (
+                abs(self.agent_pos[0] - self.goal_pos[0]) +
+                abs(self.agent_pos[1] - self.goal_pos[1])
+        )
         return self._build_observation(), self._build_info(status="running")
 
     def step(self, action: int):
         if self.current_spec is None:
             raise RuntimeError("reset() must be called before step().")
         action = int(action)
+        self._prev_agent_pos = self.agent_pos
         proposed = self._move_within_bounds(self.agent_pos, ACTION_DELTAS[action])
         if proposed != self.agent_pos:
             self.last_path_length += 1
@@ -152,20 +160,30 @@ class DynamicNavigationEnv(gym.Env):
     def _build_observation(self) -> dict[str, np.ndarray]:
         grid_size = float(self.current_spec.grid_size)
         node_features = [
-            [self.agent_pos[0] / grid_size, self.agent_pos[1] / grid_size, 0.0, 0.0, TYPE_AGENT],
-            [self.goal_pos[0] / grid_size, self.goal_pos[1] / grid_size, 0.0, 0.0, TYPE_GOAL],
+            [self.agent_pos[0] / grid_size, self.agent_pos[1] / grid_size,
+             0.0, 0.0, TYPE_AGENT, 0.0, 0.0],
+            [self.goal_pos[0] / grid_size, self.goal_pos[1] / grid_size,
+             0.0, 0.0, TYPE_GOAL, 0.0, 0.0],
         ]
         positions = [self.agent_pos, self.goal_pos]
         for obstacle in self.obstacles:
             vx, vy = obstacle.velocity
-            node_features.append(
-                [obstacle.position[0] / grid_size, obstacle.position[1] / grid_size, float(vx), float(vy), TYPE_OBSTACLE]
-            )
+            is_cv = 1.0 if obstacle.pattern == "constant_velocity" else 0.0
+            is_rw = 0.0 if obstacle.pattern == "constant_velocity" else 1.0
+            node_features.append([
+                obstacle.position[0] / grid_size,
+                obstacle.position[1] / grid_size,
+                float(vx) / self.current_spec.grid_size,  # 归一化
+                float(vy) / self.current_spec.grid_size,
+                TYPE_OBSTACLE,
+                is_cv,
+                is_rw,
+            ])
             positions.append(obstacle.position)
         node_array = np.asarray(node_features, dtype=np.float32)
         edge_index = build_knn_edge_index(np.asarray(positions, dtype=np.float32), self.config.knn_k)
         max_edges = self.config.max_nodes * self.config.knn_k
-        padded_edges = np.zeros((2, max_edges), dtype=np.int64)
+        padded_edges = np.full((2, max_edges), -1, dtype=np.int64)
         length = min(edge_index.shape[1], max_edges)
         if length:
             padded_edges[:, :length] = edge_index[:, :length]
@@ -173,8 +191,58 @@ class DynamicNavigationEnv(gym.Env):
         for action, delta in ACTION_DELTAS.items():
             if self._move_within_bounds(self.agent_pos, delta) == self.agent_pos and delta != (0, 0):
                 action_mask[action] = 0.0
+        node_count_feature = float(node_array.shape[0]) / float(self.config.max_nodes)
+        if self.obstacles:
+            min_obs_dist = min(
+                abs(self.agent_pos[0] - obs.position[0]) +
+                abs(self.agent_pos[1] - obs.position[1])
+                for obs in self.obstacles
+            )
+            norm_min_dist = min_obs_dist / (self.current_spec.grid_size * 2.0)
+        else:
+            norm_min_dist = 1.0
+
+        goal_dist = abs(self.agent_pos[0] - self.goal_pos[0]) + abs(self.agent_pos[1] - self.goal_pos[1])
+        norm_goal_dist = goal_dist / (self.current_spec.grid_size * 2.0)
+        if self.goal_pos[0] == self.agent_pos[0]:
+            goal_dx = 0.0
+        else:
+            goal_dx = (self.goal_pos[0] - self.agent_pos[0]) / grid_size
+        if self.goal_pos[1] == self.agent_pos[1]:
+            goal_dy = 0.0
+        else:
+            goal_dy = (self.goal_pos[1] - self.agent_pos[1]) / grid_size
+
+        nearest_obs_dx = 0.0
+        nearest_obs_dy = 0.0
+        if self._prev_agent_pos is None:
+            prev_dx = 0.0
+            prev_dy = 0.0
+        else:
+            prev_dx = (self.agent_pos[0] - self._prev_agent_pos[0]) / grid_size
+            prev_dy = (self.agent_pos[1] - self._prev_agent_pos[1]) / grid_size
+
+        if self.obstacles:
+            nearest_obs = min(
+                self.obstacles,
+                key=lambda obs: abs(self.agent_pos[0] - obs.position[0]) + abs(self.agent_pos[1] - obs.position[1]),
+            )
+            nearest_obs_dx = (nearest_obs.position[0] - self.agent_pos[0]) / grid_size
+            nearest_obs_dy = (nearest_obs.position[1] - self.agent_pos[1]) / grid_size
+
         global_features = np.asarray(
-            [self.step_count / self.current_spec.max_steps, (self.current_spec.max_steps - self.step_count) / self.current_spec.max_steps],
+            [
+                self.step_count / self.current_spec.max_steps,
+                node_count_feature,
+                norm_min_dist,  # 新增第4维
+                norm_goal_dist,
+                prev_dx,
+                prev_dy,
+                goal_dx,
+                goal_dy,
+                nearest_obs_dx,
+                nearest_obs_dy,
+            ],
             dtype=np.float32,
         )
         padded_nodes = np.zeros((self.config.max_nodes, NODE_FEATURE_DIM), dtype=np.float32)
@@ -185,6 +253,8 @@ class DynamicNavigationEnv(gym.Env):
             "global_features": global_features,
             "action_mask": action_mask,
             "node_count": np.asarray([node_array.shape[0]], dtype=np.int64),
+            "grid_size": np.asarray(self.current_spec.grid_size, dtype=np.int64),  # 新增
+            "difficulty": self.difficulty,  # 新增
         }
 
     def _build_info(self, status: str) -> dict[str, Any]:

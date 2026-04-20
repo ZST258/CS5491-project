@@ -47,7 +47,8 @@ def select_case_indices(rows: list[dict[str, Any]], case_types: list[str], limit
         candidates = list(rows)
         if case_type == "success":
             candidates = [row for row in candidates if int(row["success"]) == 1]
-            candidates.sort(key=lambda row: (-float_or_default(row["path_efficiency"]), int(row["episode_length"])))
+            # prefer cases with higher time efficiency and shorter episode length
+            candidates.sort(key=lambda row: (-float_or_default(row.get("time_efficiency", "")), int(row["episode_length"])))
         elif case_type == "failure":
             candidates = [row for row in candidates if int(row["success"]) == 0]
             candidates.sort(key=lambda row: (int(row["timeout"]) - int(row["collision"]), -int(row["episode_length"])))

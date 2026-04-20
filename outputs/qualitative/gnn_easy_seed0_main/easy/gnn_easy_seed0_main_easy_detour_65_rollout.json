@@ -1,0 +1,939 @@
+{
+  "difficulty": "easy",
+  "seed": 2091,
+  "grid_size": 8,
+  "goal": [
+    6,
+    4
+  ],
+  "agent_start": [
+    0,
+    1
+  ],
+  "obstacle_starts": [
+    [
+      0,
+      0
+    ],
+    [
+      3,
+      6
+    ],
+    [
+      2,
+      1
+    ]
+  ],
+  "oracle_length": 9,
+  "status": "success",
+  "failure_type": "success",
+  "path_length": 23,
+  "episode_length": 23,
+  "turning_points": [
+    {
+      "step": 1,
+      "reasons": [
+        "near_obstacle"
+      ],
+      "status": "running"
+    },
+    {
+      "step": 2,
+      "reasons": [
+        "action_change",
+        "near_obstacle"
+      ],
+      "status": "running"
+    },
+    {
+      "step": 3,
+      "reasons": [
+        "action_change"
+      ],
+      "status": "running"
+    },
+    {
+      "step": 6,
+      "reasons": [
+        "action_change"
+      ],
+      "status": "running"
+    },
+    {
+      "step": 7,
+      "reasons": [
+        "action_change"
+      ],
+      "status": "running"
+    },
+    {
+      "step": 9,
+      "reasons": [
+        "detour"
+      ],
+      "status": "running"
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "from_pos": [
+        0,
+        1
+      ],
+      "to_pos": [
+        1,
+        1
+      ],
+      "action": 2,
+      "action_name": "down",
+      "reward": -0.18,
+      "status": "running",
+      "path_length": 1,
+      "min_obstacle_distance": 1.0,
+      "goal_distance": 8,
+      "obstacles": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 2,
+      "from_pos": [
+        1,
+        1
+      ],
+      "to_pos": [
+        1,
+        2
+      ],
+      "action": 4,
+      "action_name": "right",
+      "reward": -0.17,
+      "status": "running",
+      "path_length": 2,
+      "min_obstacle_distance": 1.0,
+      "goal_distance": 7,
+      "obstacles": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          4,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 3,
+      "from_pos": [
+        1,
+        2
+      ],
+      "to_pos": [
+        2,
+        2
+      ],
+      "action": 2,
+      "action_name": "down",
+      "reward": -0.16,
+      "status": "running",
+      "path_length": 3,
+      "min_obstacle_distance": 3.0,
+      "goal_distance": 6,
+      "obstacles": [
+        [
+          0,
+          3
+        ],
+        [
+          3,
+          7
+        ],
+        [
+          5,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 4,
+      "from_pos": [
+        2,
+        2
+      ],
+      "to_pos": [
+        3,
+        2
+      ],
+      "action": 2,
+      "action_name": "down",
+      "reward": -0.15000000000000002,
+      "status": "running",
+      "path_length": 4,
+      "min_obstacle_distance": 4.0,
+      "goal_distance": 5,
+      "obstacles": [
+        [
+          0,
+          4
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          6,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 5,
+      "from_pos": [
+        3,
+        2
+      ],
+      "to_pos": [
+        4,
+        2
+      ],
+      "action": 2,
+      "action_name": "down",
+      "reward": -0.14,
+      "status": "running",
+      "path_length": 5,
+      "min_obstacle_distance": 4.0,
+      "goal_distance": 4,
+      "obstacles": [
+        [
+          0,
+          5
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          7,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 6,
+      "from_pos": [
+        4,
+        2
+      ],
+      "to_pos": [
+        4,
+        3
+      ],
+      "action": 4,
+      "action_name": "right",
+      "reward": -0.13,
+      "status": "running",
+      "path_length": 6,
+      "min_obstacle_distance": 4.0,
+      "goal_distance": 3,
+      "obstacles": [
+        [
+          0,
+          6
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          6,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 7,
+      "from_pos": [
+        4,
+        3
+      ],
+      "to_pos": [
+        5,
+        3
+      ],
+      "action": 2,
+      "action_name": "down",
+      "reward": -0.12000000000000001,
+      "status": "running",
+      "path_length": 7,
+      "min_obstacle_distance": 2.0,
+      "goal_distance": 2,
+      "obstacles": [
+        [
+          0,
+          7
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          5,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 8,
+      "from_pos": [
+        5,
+        3
+      ],
+      "to_pos": [
+        6,
+        3
+      ],
+      "action": 2,
+      "action_name": "down",
+      "reward": -0.11,
+      "status": "running",
+      "path_length": 8,
+      "min_obstacle_distance": 4.0,
+      "goal_distance": 1,
+      "obstacles": [
+        [
+          0,
+          6
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          4,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 9,
+      "from_pos": [
+        6,
+        3
+      ],
+      "to_pos": [
+        7,
+        3
+      ],
+      "action": 2,
+      "action_name": "down",
+      "reward": -0.12000000000000001,
+      "status": "running",
+      "path_length": 9,
+      "min_obstacle_distance": 6.0,
+      "goal_distance": 2,
+      "obstacles": [
+        [
+          0,
+          5
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 10,
+      "from_pos": [
+        7,
+        3
+      ],
+      "to_pos": [
+        7,
+        4
+      ],
+      "action": 4,
+      "action_name": "right",
+      "reward": -0.11,
+      "status": "running",
+      "path_length": 10,
+      "min_obstacle_distance": 7.0,
+      "goal_distance": 1,
+      "obstacles": [
+        [
+          0,
+          4
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 11,
+      "from_pos": [
+        7,
+        4
+      ],
+      "to_pos": [
+        7,
+        3
+      ],
+      "action": 3,
+      "action_name": "left",
+      "reward": -0.12000000000000001,
+      "status": "running",
+      "path_length": 11,
+      "min_obstacle_distance": 7.0,
+      "goal_distance": 2,
+      "obstacles": [
+        [
+          0,
+          3
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 12,
+      "from_pos": [
+        7,
+        3
+      ],
+      "to_pos": [
+        7,
+        4
+      ],
+      "action": 4,
+      "action_name": "right",
+      "reward": -0.11,
+      "status": "running",
+      "path_length": 12,
+      "min_obstacle_distance": 8.0,
+      "goal_distance": 1,
+      "obstacles": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 13,
+      "from_pos": [
+        7,
+        4
+      ],
+      "to_pos": [
+        7,
+        3
+      ],
+      "action": 3,
+      "action_name": "left",
+      "reward": -0.12000000000000001,
+      "status": "running",
+      "path_length": 13,
+      "min_obstacle_distance": 8.0,
+      "goal_distance": 2,
+      "obstacles": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 14,
+      "from_pos": [
+        7,
+        3
+      ],
+      "to_pos": [
+        7,
+        4
+      ],
+      "action": 4,
+      "action_name": "right",
+      "reward": -0.11,
+      "status": "running",
+      "path_length": 14,
+      "min_obstacle_distance": 7.0,
+      "goal_distance": 1,
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 15,
+      "from_pos": [
+        7,
+        4
+      ],
+      "to_pos": [
+        7,
+        3
+      ],
+      "action": 3,
+      "action_name": "left",
+      "reward": -0.12000000000000001,
+      "status": "running",
+      "path_length": 15,
+      "min_obstacle_distance": 6.0,
+      "goal_distance": 2,
+      "obstacles": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 16,
+      "from_pos": [
+        7,
+        3
+      ],
+      "to_pos": [
+        7,
+        4
+      ],
+      "action": 4,
+      "action_name": "right",
+      "reward": -0.11,
+      "status": "running",
+      "path_length": 16,
+      "min_obstacle_distance": 6.0,
+      "goal_distance": 1,
+      "obstacles": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          4,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 17,
+      "from_pos": [
+        7,
+        4
+      ],
+      "to_pos": [
+        7,
+        3
+      ],
+      "action": 3,
+      "action_name": "left",
+      "reward": -0.12000000000000001,
+      "status": "running",
+      "path_length": 17,
+      "min_obstacle_distance": 4.0,
+      "goal_distance": 2,
+      "obstacles": [
+        [
+          0,
+          3
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          5,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 18,
+      "from_pos": [
+        7,
+        3
+      ],
+      "to_pos": [
+        7,
+        4
+      ],
+      "action": 4,
+      "action_name": "right",
+      "reward": -0.11,
+      "status": "running",
+      "path_length": 18,
+      "min_obstacle_distance": 4.0,
+      "goal_distance": 1,
+      "obstacles": [
+        [
+          0,
+          4
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          6,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 19,
+      "from_pos": [
+        7,
+        4
+      ],
+      "to_pos": [
+        7,
+        3
+      ],
+      "action": 3,
+      "action_name": "left",
+      "reward": -0.12000000000000001,
+      "status": "running",
+      "path_length": 19,
+      "min_obstacle_distance": 2.0,
+      "goal_distance": 2,
+      "obstacles": [
+        [
+          0,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          7,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 20,
+      "from_pos": [
+        7,
+        3
+      ],
+      "to_pos": [
+        7,
+        4
+      ],
+      "action": 4,
+      "action_name": "right",
+      "reward": -0.11,
+      "status": "running",
+      "path_length": 20,
+      "min_obstacle_distance": 4.0,
+      "goal_distance": 1,
+      "obstacles": [
+        [
+          0,
+          6
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          6,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 21,
+      "from_pos": [
+        7,
+        4
+      ],
+      "to_pos": [
+        7,
+        3
+      ],
+      "action": 3,
+      "action_name": "left",
+      "reward": -0.12000000000000001,
+      "status": "running",
+      "path_length": 21,
+      "min_obstacle_distance": 4.0,
+      "goal_distance": 2,
+      "obstacles": [
+        [
+          0,
+          7
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          5,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 22,
+      "from_pos": [
+        7,
+        3
+      ],
+      "to_pos": [
+        7,
+        4
+      ],
+      "action": 4,
+      "action_name": "right",
+      "reward": -0.11,
+      "status": "running",
+      "path_length": 22,
+      "min_obstacle_distance": 6.0,
+      "goal_distance": 1,
+      "obstacles": [
+        [
+          0,
+          6
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          4,
+          1
+        ]
+      ]
+    },
+    {
+      "step": 23,
+      "from_pos": [
+        7,
+        4
+      ],
+      "to_pos": [
+        6,
+        4
+      ],
+      "action": 1,
+      "action_name": "up",
+      "reward": 9.9,
+      "status": "success",
+      "path_length": 23,
+      "min_obstacle_distance": 6.0,
+      "goal_distance": 0,
+      "obstacles": [
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          7
+        ],
+        [
+          3,
+          1
+        ]
+      ]
+    }
+  ],
+  "frames": [
+    "Step 0\nX A . . . . . .\n. . . . . . . .\n. X . . . . . .\n. . . . . . X .\n. . . . . . . .\n. . . . . . . .\n. . . . G . . .\n. . . . . . . .",
+    "Step 1 [down]\n. X . . . . . .\n. A . . . . . .\n. . . . . . X .\n. X . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . G . . .\n. . . . . . . .",
+    "Step 2 [right]\n. . X . . . . .\n. . A . . . . .\n. . . . . . . X\n. . . . . . . .\n. X . . . . . .\n. . . . . . . .\n. . . . G . . .\n. . . . . . . .",
+    "Step 3 [down]\n. . . X . . . .\n. . . . . . . .\n. . A . . . . .\n. . . . . . . X\n. . . . . . . .\n. X . . . . . .\n. . . . G . . .\n. . . . . . . .",
+    "Step 4 [down]\n. . . . X . . .\n. . . . . . . .\n. . . . . . . .\n. . A . . . X .\n. . . . . . . .\n. . . . . . . .\n. X . . G . . .\n. . . . . . . .",
+    "Step 5 [down]\n. . . . . X . .\n. . . . . . . .\n. . . . . . . .\n. . . . . X . .\n. . A . . . . .\n. . . . . . . .\n. . . . G . . .\n. X . . . . . .",
+    "Step 6 [right]\n. . . . . . X .\n. . . . . . . .\n. . . . . X . .\n. . . . . . . .\n. . . A . . . .\n. . . . . . . .\n. X . . G . . .\n. . . . . . . .",
+    "Step 7 [down]\n. . . . . . . X\n. . . . . . . .\n. . . . . . . .\n. . . . . X . .\n. . . . . . . .\n. X . A . . . .\n. . . . G . . .\n. . . . . . . .",
+    "Step 8 [down]\n. . . . . . X .\n. . . . . . . .\n. . . . . X . .\n. . . . . . . .\n. X . . . . . .\n. . . . . . . .\n. . . A G . . .\n. . . . . . . .",
+    "Step 9 [down]\n. . . . . X . .\n. . . . . . . .\n. . . . . X . .\n. X . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . G . . .\n. . . A . . . .",
+    "Step 10 [right]\n. . . . X . . .\n. . . . . . . .\n. X . . . . X .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . G . . .\n. . . . A . . .",
+    "Step 11 [left]\n. . . X . . . .\n. X . . . . . .\n. . . . . . . X\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . G . . .\n. . . A . . . .",
+    "Step 12 [right]\n. X X . . . . .\n. . . . . . . .\n. . . . . . . X\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . G . . .\n. . . . A . . .",
+    "Step 13 [left]\n. X . . . . . .\n. X . . . . . .\n. . . . . . . X\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . G . . .\n. . . A . . . .",
+    "Step 14 [right]\nX . . . . . . .\n. . . . . . . .\n. X . . . . X .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . G . . .\n. . . . A . . .",
+    "Step 15 [left]\n. X . . . . . .\n. . . . . . . .\n. . . . . . X .\n. X . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . G . . .\n. . . A . . . .",
+    "Step 16 [right]\n. . X . . . . .\n. . . . . . . .\n. . . . . . X .\n. . . . . . . .\n. X . . . . . .\n. . . . . . . .\n. . . . G . . .\n. . . . A . . .",
+    "Step 17 [left]\n. . . X . . . .\n. . . . . . X .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. X . . . . . .\n. . . . G . . .\n. . . A . . . .",
+    "Step 18 [right]\n. . . . X . . .\n. . . . . . . .\n. . . . . . X .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. X . . G . . .\n. . . . A . . .",
+    "Step 19 [left]\n. . . . . X . .\n. . . . . . . .\n. . . . . . X .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . G . . .\n. X . A . . . .",
+    "Step 20 [right]\n. . . . . . X .\n. . . . . . . .\n. . . . . X . .\n. . . . . . . .\n. . . . . . . .\n. . . . . . . .\n. X . . G . . .\n. . . . A . . .",
+    "Step 21 [left]\n. . . . . . . X\n. . . . . . . .\n. . . . . . X .\n. . . . . . . .\n. . . . . . . .\n. X . . . . . .\n. . . . G . . .\n. . . A . . . .",
+    "Step 22 [right]\n. . . . . . X .\n. . . . . . X .\n. . . . . . . .\n. . . . . . . .\n. X . . . . . .\n. . . . . . . .\n. . . . G . . .\n. . . . A . . .",
+    "Step 23 [up]\n. . . . . X . .\n. . . . . . . X\n. . . . . . . .\n. X . . . . . .\n. . . . . . . .\n. . . . . . . .\n. . . . G . . .\n. . . . . . . ."
+  ],
+  "agent_positions": [
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      1
+    ],
+    [
+      1,
+      2
+    ],
+    [
+      2,
+      2
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      4,
+      2
+    ],
+    [
+      4,
+      3
+    ],
+    [
+      5,
+      3
+    ],
+    [
+      6,
+      3
+    ],
+    [
+      7,
+      3
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      7,
+      3
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      7,
+      3
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      7,
+      3
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      7,
+      3
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      7,
+      3
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      7,
+      3
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      6,
+      4
+    ]
+  ]
+}

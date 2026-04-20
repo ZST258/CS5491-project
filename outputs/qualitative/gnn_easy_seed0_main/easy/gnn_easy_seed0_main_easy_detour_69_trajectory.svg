@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="368" height="398">
+<rect width="368" height="398" fill="white"/>
+<text x="184.0" y="24" text-anchor="middle" font-size="18" font-family="Helvetica">gnn_easy_seed0_main_easy_detour_69: success</text>
+<line x1="40" y1="40" x2="328" y2="40" stroke="#d9d9d9"/>
+<line x1="40" y1="76" x2="328" y2="76" stroke="#d9d9d9"/>
+<line x1="40" y1="112" x2="328" y2="112" stroke="#d9d9d9"/>
+<line x1="40" y1="148" x2="328" y2="148" stroke="#d9d9d9"/>
+<line x1="40" y1="184" x2="328" y2="184" stroke="#d9d9d9"/>
+<line x1="40" y1="220" x2="328" y2="220" stroke="#d9d9d9"/>
+<line x1="40" y1="256" x2="328" y2="256" stroke="#d9d9d9"/>
+<line x1="40" y1="292" x2="328" y2="292" stroke="#d9d9d9"/>
+<line x1="40" y1="328" x2="328" y2="328" stroke="#d9d9d9"/>
+<line x1="40" y1="40" x2="40" y2="328" stroke="#d9d9d9"/>
+<line x1="76" y1="40" x2="76" y2="328" stroke="#d9d9d9"/>
+<line x1="112" y1="40" x2="112" y2="328" stroke="#d9d9d9"/>
+<line x1="148" y1="40" x2="148" y2="328" stroke="#d9d9d9"/>
+<line x1="184" y1="40" x2="184" y2="328" stroke="#d9d9d9"/>
+<line x1="220" y1="40" x2="220" y2="328" stroke="#d9d9d9"/>
+<line x1="256" y1="40" x2="256" y2="328" stroke="#d9d9d9"/>
+<line x1="292" y1="40" x2="292" y2="328" stroke="#d9d9d9"/>
+<line x1="328" y1="40" x2="328" y2="328" stroke="#d9d9d9"/>
+<rect x="190" y="298" width="24" height="24" fill="#bbbbbb" />
+<rect x="82" y="226" width="24" height="24" fill="#bbbbbb" />
+<rect x="262" y="118" width="24" height="24" fill="#bbbbbb" />
+<rect x="226" y="82" width="24" height="24" fill="#2ca02c" />
+<polyline points="310.0,94.0 310.0,58.0 274.0,58.0 238.0,58.0 238.0,94.0" fill="none" stroke="#d62728" stroke-width="3"/>
+<circle cx="310.0" cy="94.0" r="6" fill="#1f77b4" />
+<circle cx="238.0" cy="94.0" r="6" fill="#d62728" />
+</svg>
