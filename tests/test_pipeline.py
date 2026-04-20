@@ -379,7 +379,14 @@ def test_aggregate_results_and_generate_report_assets(tmp_path: Path):
         cwd=Path.cwd(),
         check=True,
     )
-    assert (figures_dir / "success_rate.svg").exists() or (figures_dir / "success_rate.png").exists()
+    # The plotting utility now produces composite group figures instead of
+    # individual metric files. Accept either the legacy single-metric files or
+    # the new composite group figure to remain backward compatible.
+    assert (
+        (figures_dir / "group_main_metrics.png").exists()
+        or (figures_dir / "success_rate.svg").exists()
+        or (figures_dir / "success_rate.png").exists()
+    )
     subprocess.run(
         [
             sys.executable,

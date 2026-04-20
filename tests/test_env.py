@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 from dynamic_nav.env import DynamicNavigationEnv
+from dynamic_nav.config import NODE_FEATURE_DIM
 
 
 def test_reset_produces_legal_positions():
     env = DynamicNavigationEnv("easy")
     observation, info = env.reset(seed=7)
-    assert observation["node_features"].shape == (12, 5)
+    # Use the environment's configured max_nodes and the global NODE_FEATURE_DIM
+    # rather than hard-coding (12, 5) so the test remains robust to feature
+    # dimension/extensions.
+    assert observation["node_features"].shape == (env.config.max_nodes, NODE_FEATURE_DIM)
     assert observation["edge_index"].shape[0] == 2
     assert info["status"] == "running"
     positions = env.agent_pos, env.goal_pos, *(obstacle.position for obstacle in env.obstacles)
