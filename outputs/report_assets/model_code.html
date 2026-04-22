@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dynamic_nav · Policy Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0d0f14;
+  --surface:   #13161f;
+  --panel:     #181c27;
+  --border:    #252a38;
+  --border2:   #1e2333;
+  --muted:     #4a5270;
+  --text:      #b8c4e0;
+  --bright:    #e8eeff;
+
+  /* accent palette */
+  --gnn:       #2dd4bf;   /* teal */
+  --gnn-dim:   rgba(45,212,191,.10);
+  --mlp:       #fb923c;   /* orange */
+  --mlp-dim:   rgba(251,146,60,.10);
+  --pred:      #a78bfa;   /* violet */
+  --pred-dim:  rgba(167,139,250,.10);
+  --shared:    #38bdf8;   /* sky */
+  --shared-dim:rgba(56,189,248,.10);
+  --aux:       #f472b6;   /* pink */
+  --aux-dim:   rgba(244,114,182,.10);
+  --out:       #4ade80;   /* green */
+  --out-dim:   rgba(74,222,128,.08);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{
+  scroll-behavior:smooth;
+  height: 800px;      /* 锁定 html 层高度，防止 body 撑开 */
+  overflow: hidden;
+}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 800px;      /* 严格锁定总高 */
+  overflow: hidden;    /* 彻底禁止全局滚动 */
+  display: flex;       /* 开启 flex 布局 */
+  flex-direction: column; /* 纵向排列：header -> tab-bar -> workspace */
+}
+
+body > * {
+  min-height: 0;
+  flex-shrink: 0;      /* 所有直接子元素默认不收缩 */
+}
+/* ─── HEADER ─────────────────────────────────────── */
+header {
+  padding: 36px 48px 28px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  flex-shrink: 0; /* 核心：防止被挤压 */
+}
+.hd-title{
+  font-family:'Instrument Serif',serif;
+  font-size:1.9rem;
+  color:var(--bright);
+  letter-spacing:-.01em;
+  line-height:1.15;
+}
+.hd-title em{font-style:italic;color:var(--shared)}
+.hd-sub{
+  margin-top:5px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.7rem;
+  color:var(--muted);
+  letter-spacing:.06em;
+}
+.legend{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.leg{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:.72rem;
+  font-family:'IBM Plex Mono',monospace;
+  color:var(--muted);
+}
+.leg-dot{
+  width:8px;height:8px;
+  border-radius:2px;
+  flex-shrink:0;
+}
+
+/* ─── TABS ────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  gap: 2px;
+  padding: 20px 48px 0;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0; /* 核心：防止被挤压 */
+}
+.tab{
+  padding:10px 24px;
+  font-size:.78rem;
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:600;
+  letter-spacing:.05em;
+  cursor:pointer;
+  border-radius:6px 6px 0 0;
+  border:1px solid transparent;
+  border-bottom:none;
+  color:var(--muted);
+  transition:all .18s;
+  position:relative;
+  bottom:-1px;
+}
+.tab:hover{color:var(--text);background:var(--surface)}
+.tab.active{color:var(--bright);background:var(--surface);border-color:var(--border)}
+.tab[data-tab="gnn"].active    {color:var(--gnn)}
+.tab[data-tab="mlp"].active    {color:var(--mlp)}
+.tab[data-tab="pred"].active   {color:var(--pred)}
+.tab[data-tab="shared"].active {color:var(--shared)}
+
+/* ─── LAYOUT ──────────────────────────────────────── */
+.workspace {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  flex: 1;          /* 核心：自动填满 body 除去 header+tab-bar 后的剩余高度 */
+  flex-shrink: 1;   /* 允许收缩（覆盖上面 body > * 的 flex-shrink:0）*/
+  min-height: 0;    /* 核心：解决 Grid 容器被内容撑开的顽疾 */
+  overflow: hidden; /* 核心：禁止 workspace 溢出 */
+}
+.diagram-area {
+  padding: 0;
+  margin: 0;
+  border: 1.5px solid var(--border);
+  min-height: 0;
+  display: block;
+  height: auto; 
+  overflow: hidden; /* diagram 区域也可滚动 */
+}
+.inspector {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  height: 100%; /* 继承 workspace 的 1000px 高度 */
+  overflow-y: auto; /* 确保内容超出时出现滚动条 */
+}
+
+/* ─── PANEL VISIBILITY ────────────────────────────── */
+.panel {
+  display: none;
+  min-height: 0;
+  overflow-y: auto; /* 核心：长出的内容在这里产生滚动条 */
+}
+
+.panel.active {
+  display: block;
+  height: 100%;
+  overflow-y: auto; 
+  padding: 10px 10px 20px 10px;
+}
+
+/* ─── FLOWCHART PRIMITIVES ────────────────────────── */
+.flow{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  width:100%;
+  height: auto;
+  max-width:620px;
+  margin: auto;
+}
+
+/* 针对所有元素的滚动条样式修改 */
+::-webkit-scrollbar {
+  width: 8px; /* 滚动条宽度 */
+}
+
+/* 滚动条轨道：设置为透明 */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 滚动条滑块：设置为灰色 */
+::-webkit-scrollbar-thumb {
+  background-color: #555; /* 灰色滑块 */
+  border-radius: 10px;    /* 滑块圆角 */
+  border: 2px solid transparent; /* 通过透明边框让滑块看起来更瘦一些 */
+  background-clip: padding-box;
+}
+
+/* 鼠标悬停在滑块上时变深一点 */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #888;
+}
+
+
+/* NODE */
+.node{
+  width:100%;
+  border-radius:7px;
+  padding:13px 18px 13px 22px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  position:relative;
+  cursor:pointer;
+  transition:border-color .15s, box-shadow .15s, transform .15s;
+  user-select:none;
+}
+.node::before{
+  content:'';
+  position:absolute;
+  left:0;top:8px;bottom:8px;
+  width:3px;border-radius:0 2px 2px 0;
+  background:var(--border);
+  transition:background .15s;
+}
+.node:hover{transform:translateX(3px);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+.node.active-node{border-color:currentColor;box-shadow:0 0 0 1px currentColor inset}
+
+/* node variants */
+.node.gnn    {color:var(--gnn);    border-color:rgba(45,212,191,.2);  background:var(--gnn-dim)}
+.node.gnn::before    {background:var(--gnn)}
+.node.mlp    {color:var(--mlp);    border-color:rgba(251,146,60,.2);  background:var(--mlp-dim)}
+.node.mlp::before    {background:var(--mlp)}
+.node.pred   {color:var(--pred);   border-color:rgba(167,139,250,.2); background:var(--pred-dim)}
+.node.pred::before   {background:var(--pred)}
+.node.shared {color:var(--shared); border-color:rgba(56,189,248,.25); background:var(--shared-dim)}
+.node.shared::before {background:var(--shared)}
+.node.aux    {color:var(--aux);    border-color:rgba(244,114,182,.2); background:var(--aux-dim)}
+.node.aux::before    {background:var(--aux)}
+.node.out    {color:var(--out);    border-color:rgba(74,222,128,.25); background:var(--out-dim)}
+.node.out::before    {background:var(--out)}
+.node.io{border-style:dashed}
+
+.node .tag{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.6rem;
+  font-weight:600;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  opacity:.55;
+  margin-bottom:2px;
+}
+.node .name{
+  font-size:.88rem;
+  font-weight:600;
+  color:var(--bright);
+  line-height:1.3;
+}
+.node .note{
+  font-size:.73rem;
+  color:var(--muted);
+  margin-top:3px;
+  line-height:1.5;
+  font-family:'IBM Plex Mono',monospace;
+}
+
+/* ARROW */
+.arr{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  padding-left:28px;
+  gap:0;
+  position:relative;
+}
+.arr-line{
+  width:1px;height:22px;
+  background:var(--border);
+}
+.arr-chevron{
+  font-size:.65rem;
+  color:var(--muted);
+  margin-top:-4px;
+  margin-left:-4px;
+  line-height:1;
+}
+.arr-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.63rem;
+  color:var(--muted);
+  background:var(--bg);
+  border:1px solid var(--border2);
+  padding:1px 7px;
+  border-radius:3px;
+  margin:-2px 0 4px 6px;
+  white-space:nowrap;
+}
+
+/* LOOP BOX */
+.loop{
+  width:100%;
+  border:1px dashed var(--border);
+  border-radius:8px;
+  padding:16px 14px 12px;
+  position:relative;
+}
+.loop-tag{
+  position:absolute;
+  top:-9px;left:14px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.62rem;
+  font-weight:600;
+  letter-spacing:.07em;
+  color:var(--muted);
+  background:var(--bg);
+  padding:0 8px;
+  border-radius:2px;
+}
+
+/* BRANCH (two columns) */
+.branch{
+  display:flex;
+  gap:12px;
+  width:100%;
+}
+.bcol{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:0;
+}
+.bcol-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.6rem;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+  padding:4px 6px;
+  border-top:1px dashed var(--border);
+  margin-bottom:8px;
+}
+
+/* ─── INSPECTOR ───────────────────────────────────── */
+.ins-header{
+  padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:20px;
+}
+.ins-title{
+  font-family:'Instrument Serif',serif;
+  font-size:1.05rem;
+  color:var(--bright);
+  margin-bottom:4px;
+}
+.ins-badge{
+  display:inline-block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.6rem;
+  font-weight:600;
+  letter-spacing:.09em;
+  padding:2px 8px;
+  border-radius:3px;
+  background:var(--border);
+  color:var(--muted);
+}
+.ins-empty{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  color:var(--muted);
+  font-size:.8rem;
+  font-family:'IBM Plex Mono',monospace;
+  letter-spacing:.04em;
+  text-align:center;
+  opacity:.5;
+}
+.ins-empty svg{opacity:.3}
+
+.ins-content{}
+.ins-section{
+  margin-bottom:18px;
+}
+.ins-section-title{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.6rem;
+  font-weight:600;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:8px;
+  padding-bottom:5px;
+  border-bottom:1px solid var(--border2);
+}
+.ins-desc{
+  font-size:.82rem;
+  line-height:1.65;
+  color:var(--text);
+}
+.ins-desc code{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.76rem;
+  color:var(--shared);
+  background:rgba(56,189,248,.08);
+  padding:1px 5px;
+  border-radius:3px;
+}
+.ins-io{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.ins-io-row{
+  display:flex;
+  gap:8px;
+  align-items:flex-start;
+}
+.ins-io-label{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.62rem;
+  font-weight:600;
+  letter-spacing:.06em;
+  min-width:40px;
+  padding-top:2px;
+}
+.ins-io-val{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.72rem;
+  color:var(--text);
+  line-height:1.6;
+}
+.code-block{
+  background:#0a0c12;
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:14px 16px;
+  overflow-x:auto;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.7rem;
+  line-height:1.7;
+  color:#c8d4e0;
+}
+.code-block .kw{color:#a78bfa}
+.code-block .fn{color:#2dd4bf}
+.code-block .cm{color:#3d4f6e}
+.code-block .st{color:#fb923c}
+.code-block .nm{color:#38bdf8}
+
+.ins-tags{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.ins-tag{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.62rem;
+  padding:2px 8px;
+  border-radius:3px;
+  border:1px solid var(--border);
+  color:var(--muted);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="hd-title">Policy Architecture <em>Inspector</em></div>
+    <div class="hd-sub">dynamic_nav · common.py · gnn.py · mlp.py · predictive.py</div>
+  </div>
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:var(--shared)"></div>Shared module</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--gnn)"></div>GNN-specific</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--mlp)"></div>MLP-specific</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--pred)"></div>Predictive-specific</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--aux)"></div>Auxiliary / training only</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--out)"></div>Output</div>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <div class="tab active" data-tab="pred"   onclick="switchTab('pred')">PredictivePolicy</div>
+  <div class="tab"        data-tab="gnn"    onclick="switchTab('gnn')">GNNPolicy</div>
+  <div class="tab"        data-tab="mlp"    onclick="switchTab('mlp')">MLPPolicy</div>
+  <div class="tab"        data-tab="shared" onclick="switchTab('shared')">Shared Modules</div>
+</div>
+
+<div class="workspace">
+<div class="diagram-area">
+
+<!-- ════════════════════ PREDICTIVE ════════════════════ -->
+<div class="panel active" id="panel-pred">
+<div class="flow">
+
+  <div class="node io shared" onclick="select('pred','obs_input')">
+    <div class="tag">Input · observations: list[dict]</div>
+    <div class="name">Raw Observation Batch</div>
+    <div class="note">node_features [B,N,7] · edge_index [B,2,E] · global_features [B,G] · node_count · difficulty · grid_size</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+  <!-- STEP 1 -->
+  <div class="node pred" onclick="select('pred','extract_obs')">
+    <div class="tag">Step 1 — Obstacle Feature Extraction</div>
+    <div class="name">_extract_obstacle_features()</div>
+    <div class="note">Slice obs nodes [2:] → build obs_mask (valid count) · cv_mask (feature[5]>0.5 ⟹ constant-velocity) · obs_xy [B,M,2]</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">obs_features [B,M,7] · cv_mask [B,M] · delta_table [5,2]</div><div class="arr-chevron">▼</div></div>
+
+  <!-- STEP 2 GRU -->
+  <div class="loop">
+    <div class="loop-tag">Step 2 — ObstacleGRU · horizon H recursive steps</div>
+    <div class="flow">
+
+      <div class="node pred" onclick="select('pred','gru_input_proj')">
+        <div class="tag">Per step h=0…H-1</div>
+        <div class="name">input_proj(curr_features) → GRU hidden state</div>
+        <div class="note">Linear(7→D)→ReLU→Linear(D→D)→LayerNorm→ReLU · shared weights across all obstacles &amp; steps · flatten [B,M,7] to [B·M,7]</div>
+      </div>
+
+      <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+      <div class="node pred" onclick="select('pred','gru_cell')">
+        <div class="tag">GRU Recurrence</div>
+        <div class="name">GRUCell(x_input, h_prev) → LayerNorm → move_head</div>
+        <div class="note">move_head: Linear(D→D/2)→ReLU→Linear(D/2→5) → logits_h [B·M,5] — 5 discrete classes: stay / up / down / left / right</div>
+      </div>
+
+      <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+      <div class="node aux" onclick="select('pred','gru_pos_update')">
+        <div class="tag">Position Feedback · torch.no_grad()</div>
+        <div class="name">Soft Next Position Update</div>
+        <div class="note">softmax(logits_h) @ delta_table → exp_delta → new_xy = curr_xy + exp_delta · cv_mask · clamp [0,1] — no_grad prevents gradient explosion across H recursive steps; GRU gradients still flow through logits via CE loss</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">logits [B, M, H, 5] · collect all H steps</div><div class="arr-chevron">▼</div></div>
+
+  <!-- STEP 3 soft rollout -->
+  <div class="node pred" onclick="select('pred','soft_rollout')">
+    <div class="tag">Step 3 — Differentiable Soft Rollout (H frames, WITH grad)</div>
+    <div class="name">Future Node Tensor Construction: all_node_tensors [T=H+1, B, N, F]</div>
+    <div class="note">For each h: softmax(logits[:,h]) @ delta_table → Δxy (cv only) · proposal = curr_pos + curr_vel · detect boundary hit → reflect velocity · clamp [0,1] · accumulate all_node_tensors · rw obstacles keep current position (is_rw flag)</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">all_node_tensors [T, B, N, 7]</div><div class="arr-chevron">▼</div></div>
+
+  <!-- STEP 4 KNN graph -->
+  <div class="node pred" onclick="select('pred','knn_graph')">
+    <div class="tag">Step 4 — Graph Construction</div>
+    <div class="name">_build_knn_graph() → KNN edges + self-loops for all T frames</div>
+    <div class="note">Pairwise L1 distances on positions · top-k neighbours (k=difficulty.knn_k) · edge type one-hot [AGENT_GOAL | AGENT_OBS | OBS_OBS | SELF] · spatial distance feature · update space_dist for each future frame · repeat topology T times → edge_feat [T·B, E, 5]</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">flatten: T·B frames batched together</div><div class="arr-chevron">▼</div></div>
+
+  <!-- STEP 5 NodeEncoder + step embed + GNN -->
+  <div class="loop">
+    <div class="loop-tag">Step 5 — NodeEncoder + Step Embedding + GNN (shared, runs over T·B frames)</div>
+    <div class="flow">
+
+      <div class="node shared" onclick="select('pred','node_encoder_pred')">
+        <div class="tag">Shared Module — NodeEncoder</div>
+        <div class="name">Type-Specific Node Projection</div>
+        <div class="note">agent_proj(node[0]) · goal_proj(node[1]) · obs_proj(node[2:]) — each: Linear→Dropout→LayerNorm→ReLU — zero invalid obs beyond node_count-2 → node_h [T·B, N, latent_dim]</div>
+      </div>
+
+      <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+      <div class="node pred" onclick="select('pred','step_embed')">
+        <div class="tag">Temporal Conditioning</div>
+        <div class="name">+ step_embed(step_ids)</div>
+        <div class="note">Embedding(horizon+1, latent_dim) · step_ids = arange(T).repeat_interleave(B) — injects timestep identity into node features before message passing</div>
+      </div>
+
+      <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+      <div class="node shared" onclick="select('pred','gnn_layers_pred')">
+        <div class="tag">Shared Module — EdgeAwareGNN × num_layers</div>
+        <div class="name">Multi-Head Graph Attention with Edge Bias</div>
+        <div class="note">Q/K/V projections → QKᵀ/√d · edge_bias(edge_feat) scattered into [B,nh,N,N] via flat index dst*N+src · mask padding with -∞ → softmax → nan_to_num(0) · attn@V → residual+LN₁ → FFN(ReLU) → residual+LN₂ → zero padding nodes</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">node_h [T·B, N, D] → reshape [T, B, N, D]</div><div class="arr-chevron">▼</div></div>
+
+  <!-- STEP 6 token extract + gamma -->
+  <div class="node pred" onclick="select('pred','token_extract')">
+    <div class="tag">Step 6 — Token Extraction + Temporal Gamma Decay</div>
+    <div class="name">Frame Latents with Discount: γᵗ (γ=0.7)</div>
+    <div class="note">cat[agent[0], goal[1], global_proj(global_h)] → output_proj: Linear(3D→D)→LN→ReLU → frame_latents [T,B,D] · future frames t=1…H weighted by 0.7ᵗ · base=frame_latents[0] · cat[base, future_flat] → latents [B, D×(H+1)]</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">latents [B, latent_dim × (H+1)]</div><div class="arr-chevron">▼</div></div>
+
+  <!-- Branch: actor / critic -->
+  <div class="branch">
+    <div class="bcol">
+      <div class="bcol-label">Actor</div>
+      <div class="node pred" onclick="select('pred','actor')">
+        <div class="name">Actor MLP</div>
+        <div class="note">Linear→ReLU→Linear→ReLU→Linear(NUM_ACTIONS)</div>
+      </div>
+    </div>
+    <div class="bcol">
+      <div class="bcol-label">Critic</div>
+      <div class="node pred" onclick="select('pred','critic')">
+        <div class="name">Critic MLP + PopArt</div>
+        <div class="note">Linear→ReLU→Linear→ReLU→Linear(1) — popart_denormalize on output</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+  <div class="node io out" onclick="select('pred','out')">
+    <div class="tag">Output</div>
+    <div class="name">PolicyOutput(logits [B,A], value [B,1])</div>
+    <div class="note">logits → masked_categorical with action_mask · value raw after PopArt denormalize</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">Training only: auxiliary_loss()</div><div class="arr-chevron">▼</div></div>
+
+  <div class="node aux" onclick="select('pred','aux_loss')">
+    <div class="tag">Auxiliary Training Path — auxiliary_loss()</div>
+    <div class="name">GRU Supervision: Cross-Entropy over Obstacle Move Classes</div>
+    <div class="note">Find valid non-terminal frames · collect ground-truth Δxy per step → _delta_to_class() maps (dx,dy) ∈ {-1,0,1}² to class 0–4 · CE(GRU_logits, true_labels) · distance-weighted: w = 1/(1+|obs_xy−agent_xy|) · cv obstacles only, rw excluded · GRU features detached to prevent aux CE gradients from modifying shared GNN/NodeEncoder · final = aux_coef × mean_CE</div>
+  </div>
+
+</div>
+</div>
+
+<!-- ════════════════════ GNN ════════════════════ -->
+<div class="panel" id="panel-gnn">
+<div class="flow">
+
+  <div class="node io shared" onclick="select('gnn','obs_input')">
+    <div class="tag">Input · observations: list[dict]</div>
+    <div class="name">Raw Observation Batch</div>
+    <div class="note">node_features [B,N,7] · edge_index [B,2,E] · global_features [B,G] · node_count</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">encode()</div><div class="arr-chevron">▼</div></div>
+
+  <div class="node shared" onclick="select('gnn','build_graph')">
+    <div class="tag">Shared Module · build_graph_from_obs()</div>
+    <div class="name">Edge-Aware Graph Construction</div>
+    <div class="note">node_mask [B,N] (valid=True) · knn edges from edge_index_raw · append self-loops → ei_full [B,2,E_total] · classify edge type: AGENT_GOAL / AGENT_OBS / OBS_OBS / SELF → one-hot [B,E,4] · spatial L1 distance [B,E,1] → edge_feat [B,E,5] · zero-mask invalid edges</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">edge_feat [B,E,5] · node_mask · src_c · dst_c</div><div class="arr-chevron">▼</div></div>
+
+  <div class="node shared" onclick="select('gnn','node_encoder')">
+    <div class="tag">Shared Module · NodeEncoder</div>
+    <div class="name">Type-Specific Node Projection</div>
+    <div class="note">Three separate projections: agent_proj(node[0]) · goal_proj(node[1]) · obs_proj(node[2:]) — each branch: Linear(7→D)→Dropout→LayerNorm→ReLU — zero obs beyond valid count → cat → node_h [B,N,D]</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">node_h [B,N,latent_dim]</div><div class="arr-chevron">▼</div></div>
+
+  <div class="loop">
+    <div class="loop-tag">× num_layers — EdgeAwareGNN</div>
+    <div class="flow">
+      <div class="node gnn" onclick="select('gnn','attn')">
+        <div class="tag">Multi-Head Attention + Edge Bias</div>
+        <div class="name">Q/K/V → Attention Score + Scattered Edge Bias</div>
+        <div class="note">Q,K,V: Linear(D→D) reshaped [B,nh,N,hd] · attn=Q·Kᵀ/√hd [B,nh,N,N] · edge_bias: Linear(5→nh,bias=False) permuted [B,nh,E] · scatter_add into flat [B,nh,N²] by index dst*N+src → add to attn · mask padding keys with -∞ → softmax → nan_to_num(0)</div>
+      </div>
+      <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+      <div class="node gnn" onclick="select('gnn','ffn')">
+        <div class="tag">Aggregation + FFN</div>
+        <div class="name">attn @ V → out_proj → Residual+LN₁ → FFN → Residual+LN₂</div>
+        <div class="note">FFN: Linear(D→2D)→ReLU→Dropout→Linear(2D→D) · two LayerNorm residual blocks · zero padding nodes at end: x *= node_mask</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">node_h [B,N,D] after L passes</div><div class="arr-chevron">▼</div></div>
+
+  <div class="node gnn" onclick="select('gnn','token_extract')">
+    <div class="tag">Token Extraction</div>
+    <div class="name">Agent [idx 0] + Goal [idx 1] + Global Projection</div>
+    <div class="note">agent_latent = node_h[:,0,:] [B,D] · goal_latent = node_h[:,1,:] [B,D] · global_proj: Linear(GLOBAL_FEATURE_DIM→D) applied to global_features · cat → [B, 3D]</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">output_proj: Linear(3D→D)→LayerNorm→ReLU</div><div class="arr-chevron">▼</div></div>
+
+  <div class="branch">
+    <div class="bcol">
+      <div class="bcol-label">Policy Head</div>
+      <div class="node gnn" onclick="select('gnn','policy_head')">
+        <div class="name">policy_head</div>
+        <div class="note">Linear(D→NUM_ACTIONS) — logits [B,A]</div>
+      </div>
+    </div>
+    <div class="bcol">
+      <div class="bcol-label">Value Head</div>
+      <div class="node gnn" onclick="select('gnn','value_head')">
+        <div class="name">value_head + PopArt</div>
+        <div class="note">Linear(D→1) — scalar value [B,1] — popart_denormalize via EMA (μ,σ)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+  <div class="node io out" onclick="select('gnn','out')">
+    <div class="tag">Output</div>
+    <div class="name">PolicyOutput(logits [B,A], value [B,1])</div>
+    <div class="note">No auxiliary loss — purely reactive policy on current timestep</div>
+  </div>
+
+</div>
+</div>
+
+<!-- ════════════════════ MLP ════════════════════ -->
+<div class="panel" id="panel-mlp">
+<div class="flow">
+
+  <div class="node io mlp" onclick="select('mlp','obs_input')">
+    <div class="tag">Input · observations: list[dict]</div>
+    <div class="name">Raw Observation Batch</div>
+    <div class="note">node_features [B,N,7] · global_features [B,G] · action_mask [B,A] · (edge_index IGNORED — structure is destroyed by flattening)</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">forward_batch()</div><div class="arr-chevron">▼</div></div>
+
+  <div class="node mlp" onclick="select('mlp','flatten')">
+    <div class="tag">Shared Utility · flatten_batch() → flatten_observation()</div>
+    <div class="name">Observation Flattening — Graph Structure Destroyed</div>
+    <div class="note">Pad node_features to max_nodes rows · flatten to [max_nodes × 7] · concat global_features + action_mask → rigid flat vector [B, max_nodes·7 + G + A] · node ordering must be deterministic (agent=0, goal=1, obs=2…)</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">flat [B, input_dim]</div><div class="arr-chevron">▼</div></div>
+
+  <div class="node shared" onclick="select('mlp','mlpblock')">
+    <div class="tag">Shared Module · MLPBlock (common.py)</div>
+    <div class="name">Shared Trunk Encoder</div>
+    <div class="note">Linear(input_dim→hidden_dim)→Tanh→LayerNorm→Linear(D→D)→Tanh — no residual in base MLPBlock; hidden_dim typically 128–1024 to compensate for lack of graph inductive bias</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">encoded [B, hidden_dim]</div><div class="arr-chevron">▼</div></div>
+
+  <div class="branch">
+    <div class="bcol">
+      <div class="bcol-label">Policy Head</div>
+      <div class="node mlp" onclick="select('mlp','policy_head')">
+        <div class="name">Actor Sequential MLP</div>
+        <div class="note">Linear(D→D)→Tanh→Linear(D→NUM_ACTIONS)</div>
+      </div>
+    </div>
+    <div class="bcol">
+      <div class="bcol-label">Value Head</div>
+      <div class="node mlp" onclick="select('mlp','value_head')">
+        <div class="name">High-Capacity Critic</div>
+        <div class="note">Linear(D→D)→Tanh→LayerNorm(D)→Linear(D→1) — extra LN stabilizes covariate shift in high-D flat space</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+  <div class="node io out" onclick="select('mlp','out')">
+    <div class="tag">Output</div>
+    <div class="name">PolicyOutput(logits [B,A], value [B,1])</div>
+    <div class="note">No graph reasoning, no auxiliary loss — flat dense baseline</div>
+  </div>
+
+</div>
+</div>
+
+<!-- ════════════════════ SHARED ════════════════════ -->
+<div class="panel" id="panel-shared">
+<div class="flow">
+
+  <!-- BasePolicy -->
+  <div class="node shared" onclick="select('sh','basepolicy')">
+    <div class="tag">common.py · BasePolicy (nn.Module)</div>
+    <div class="name">Abstract Base — All Three Policies Inherit</div>
+    <div class="note">PopArt EMA normalization buffers (μ,σ) · act() → sample action · evaluate_actions() → log_prob, entropy, value_raw · popart_update(): EMA update + linear layer weight compensation: W'=(σ_old/σ_new)·W, b'=(σ_old·b+μ_old-μ_new)/σ_new · auxiliary_loss() default = 0</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+  <div class="branch">
+    <div class="bcol">
+      <div class="bcol-label">Graph-based policies</div>
+
+      <div class="node shared" onclick="select('sh','node_encoder')">
+        <div class="tag">gnn.py — NodeEncoder</div>
+        <div class="name">Type-Specific Node Projection</div>
+        <div class="note">3 separate branches: agent_proj, goal_proj, obs_proj — each: Linear(7→D)→Dropout→LN→ReLU · separates inductive bias by entity type · zero-mask invalid obs nodes · output [B,N,D]</div>
+      </div>
+
+      <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+      <div class="node shared" onclick="select('sh','edge_gnn')">
+        <div class="tag">gnn.py — EdgeAwareGNN</div>
+        <div class="name">Graph Transformer Layer with Edge Bias</div>
+        <div class="note">Q,K,V projections → scaled dot-product attention [B,nh,N,N] · edge_bias: Linear(5→nh,no bias) → scatter_add into flat attention by dst*N+src · mask+softmax+nan_to_num · out_proj → LN₁ residual · FFN(2D,ReLU,Dropout) → LN₂ residual · zero padding · num_heads=4</div>
+      </div>
+
+      <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+      <div class="node shared" onclick="select('sh','build_graph')">
+        <div class="tag">gnn.py — build_graph_from_obs()</div>
+        <div class="name">Graph + Edge Feature Construction (GNNPolicy only)</div>
+        <div class="note">Used by GNNPolicy · appends self-loops · classifies edge types via src/dst indices · one-hot encode 4 types · L1 spatial distance normalized /2 → edge_feat [B,E,5] · validity: node_mask & src_valid & dst_valid</div>
+      </div>
+
+    </div>
+    <div class="bcol">
+      <div class="bcol-label">Flat baseline</div>
+
+      <div class="node shared" onclick="select('sh','mlpblock')">
+        <div class="tag">common.py — MLPBlock</div>
+        <div class="name">Reusable MLP Trunk</div>
+        <div class="note">Linear(in→D)→Tanh→LayerNorm(D)→Linear(D→D)→Tanh — used by MLPPolicy only · hidden_dim is primary capacity lever</div>
+      </div>
+
+      <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+      <div class="node shared" onclick="select('sh','flatten_batch')">
+        <div class="tag">common.py — flatten_batch()</div>
+        <div class="name">Observation Serialization</div>
+        <div class="note">Calls flatten_observation() per sample · pads node rows to max_nodes · stacks into [B, max_nodes·7+G+A] float32 tensor on device</div>
+      </div>
+
+      <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+      <div class="node shared" onclick="select('sh','popart')">
+        <div class="tag">common.py — PopArt</div>
+        <div class="name">Adaptive Value Normalization (EMA)</div>
+        <div class="note">Maintains running (μ,σ) over raw returns via EMA with β · popart_update() compensates last Linear layer so predictions stay invariant: W←(σ_old/σ_new)W · b←(σ_old·b+μ_old−μ_new)/σ_new · popart_normalize / popart_denormalize used in act() &amp; evaluate_actions()</div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-chevron">▼</div></div>
+
+  <div class="node shared" onclick="select('sh','masked_cat')">
+    <div class="tag">common.py — masked_categorical()</div>
+    <div class="name">Action Masking + Categorical Distribution</div>
+    <div class="note">logits.masked_fill(action_mask≤0, finfo.min) — AMP safe: uses dtype-specific min (fp16≈-65504, fp32=-1e9) · returns Categorical for sampling &amp; log_prob · used in act() and evaluate_actions()</div>
+  </div>
+
+  <div class="arr"><div class="arr-line"></div><div class="arr-label">Predictive-only unique modules</div><div class="arr-chevron">▼</div></div>
+
+  <div class="node pred" onclick="select('sh','obstacle_gru')">
+    <div class="tag">predictive.py — ObstacleGRU</div>
+    <div class="name">Recurrent Obstacle Motion Predictor</div>
+    <div class="note">input_proj: Linear(7→D)→ReLU→Linear(D→D)→LN→ReLU · GRUCell(D,D) + LN · move_head: Linear(D→D/2)→ReLU→Linear(D/2→5) · recursive: updated position fed back each step · no_grad position update prevents gradient explosion · rw obstacles zeroed via cv_mask · output: [B,M,H,5] logits</div>
+  </div>
+
+</div>
+</div>
+
+</div><!-- diagram-area -->
+
+<!-- ─── INSPECTOR PANEL ─────────────────────────── -->
+<div class="inspector" id="inspector">
+  <div class="ins-header">
+    <div class="ins-title">Module Inspector</div>
+    <span class="ins-badge" id="ins-badge">READY</span>
+  </div>
+  <div id="ins-body">
+    <div class="ins-empty">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v6M8 11h6"/></svg>
+      Click any module in the<br>diagram to inspect it
+    </div>
+  </div>
+</div>
+
+</div><!-- workspace -->
+<script>
+// ── Registry ──────────────────────────────────────────────────────────────────
+const DB = {
+
+// ───────── PREDICTIVE ─────────────────────────────────────────────────────
+'pred:obs_input': {
+  title:'Raw Observation Batch',
+  badge:'INPUT · ALL POLICIES',
+  color:'var(--shared)',
+  desc:'Each dict contains: <code>node_features</code> [N,7] — positions (xy), velocities (vx,vy), dist-to-goal (dx,dy), is_rw flag; <code>edge_index</code> [2,E] — precomputed KNN connectivity; <code>global_features</code> [G] — elapsed steps, grid normalizer etc.; <code>node_count</code> actual valid nodes; <code>difficulty</code>, <code>grid_size</code> for PredictivePolicy.',
+  io:[['IN','node_features [B,N,7], edge_index [B,2,E], global [B,G], node_count [B]'],['OUT','batched tensors on device']],
+  code:`<span class="kw">for</span> obs <span class="kw">in</span> observations:
+  node_tensors[b] = obs[<span class="st">"node_features"</span>]   <span class="cm"># [N, 7]</span>
+  global_h[b]     = obs[<span class="st">"global_features"</span>] <span class="cm"># [G]</span>
+  node_counts[b]  = obs[<span class="st">"node_count"</span>]       <span class="cm"># int</span>`,
+  tags:['predictive.py','gnn.py','mlp.py']
+},
+
+'pred:extract_obs': {
+  title:'_extract_obstacle_features()',
+  badge:'PREDICTIVE · predictive.py',
+  color:'var(--pred)',
+  desc:'Slices out the obstacle nodes (indices 2 onwards) from the full node tensor. Computes <code>obs_mask</code>: a boolean mask marking which obstacle slots are actually valid (count − 2). Derives <code>cv_mask</code> from feature index 5 > 0.5, separating constant-velocity (cv) obstacles that the GRU should predict from random-walk (rw) obstacles that stay fixed. Also extracts current XY positions.',
+  io:[['IN','node_tensors [B,N,7], node_counts [B]'],['OUT','obs_features [B,M,7] · obs_mask [B,M] · cv_mask [B,M] · obs_xy [B,M,2]']],
+  code:`obs_feat  = node_tensors[:, <span class="nm">2</span>:, :]
+obs_counts = (node_counts - <span class="nm">2</span>).clamp(min=<span class="nm">0</span>)
+obs_mask   = arange(max_obs) < obs_counts       <span class="cm"># [B,M]</span>
+cv_mask    = obs_mask & (obs_feat[:,:,<span class="nm">5</span>] > <span class="nm">0.5</span>) <span class="cm"># [B,M]</span>`,
+  tags:['predictive.py','@staticmethod']
+},
+
+'pred:gru_input_proj': {
+  title:'ObstacleGRU — input_proj per step',
+  badge:'PREDICTIVE · predictive.py',
+  color:'var(--pred)',
+  desc:'The GRU processes all obstacles in parallel by flattening the [B,M,7] tensor into [B·M,7]. A shared <code>input_proj</code> MLP is called at every recursive step, accepting the current (possibly updated) feature vector. This gives the model access to the new position at each step, which is critical for detecting boundary rebounds.',
+  io:[['IN','curr_feat [B·M, 7]'],['OUT','x_input [B·M, D]']],
+  code:`curr_feat = obs_features.reshape(B*M, F)   <span class="cm"># flatten</span>
+h = self.<span class="fn">input_proj</span>(curr_feat)             <span class="cm"># init hidden</span>
+
+<span class="cm"># per step:</span>
+x_input = self.<span class="fn">input_proj</span>(curr_feat)        <span class="cm"># shared weights</span>
+<span class="cm"># Linear(7→D)→ReLU→Linear(D→D)→LN→ReLU</span>`,
+  tags:['ObstacleGRU','__init__','forward']
+},
+
+'pred:gru_cell': {
+  title:'ObstacleGRU — GRUCell + move_head',
+  badge:'PREDICTIVE · predictive.py',
+  color:'var(--pred)',
+  desc:'A single GRU cell step advances the hidden state then a move_head MLP maps it to 5 move class logits. The 5 discrete classes are: 0=stay (0,0), 1=up (-1,0), 2=down (+1,0), 3=left (0,-1), 4=right (0,+1) in grid units. Logits are zeroed for rw obstacles and padding via cv_mask.',
+  io:[['IN','x_input [B·M,D], h_prev [B·M,D]'],['OUT','logits_h [B·M,5] — 5 move classes']],
+  code:`h = self.<span class="fn">norm</span>(self.<span class="fn">gru_cell</span>(x_input, h))
+logits = self.<span class="fn">move_head</span>(h)  <span class="cm"># [B·M, 5]</span>
+logit_steps.<span class="fn">append</span>(logits)
+
+<span class="cm"># move_head:</span>
+<span class="cm"># Linear(D→D/2) → ReLU → Linear(D/2→5)</span>`,
+  tags:['ObstacleGRU','GRUCell','NUM_MOVE_CLASSES=5']
+},
+
+'pred:gru_pos_update': {
+  title:'ObstacleGRU — no_grad Position Feedback',
+  badge:'PREDICTIVE · predictive.py',
+  color:'var(--aux)',
+  desc:'After each GRU step the predicted position is updated and fed back as input for the next step. This is wrapped in <code>torch.no_grad()</code> to prevent gradient accumulation across H recursive iterations (which would cause exploding gradients). Importantly, GRU parameters still receive gradients through two paths: (1) directly via logits and CE auxiliary loss, (2) via the differentiable soft rollout in encode(). Only rw obstacles (cv_mask=0) are excluded from movement.',
+  io:[['IN','logits_h [B·M,5], curr_feat [B·M,7], delta_table [5,2]'],['OUT','updated curr_feat with new xy positions']],
+  code:`<span class="kw">with</span> torch.<span class="fn">no_grad</span>():
+  probs     = F.<span class="fn">softmax</span>(logits, dim=-<span class="nm">1</span>)
+  exp_delta = probs @ delta_table           <span class="cm"># [B·M, 2]</span>
+  new_xy = (curr_feat[:, :<span class="nm">2</span>]
+            + exp_delta * cv_mask_flat).<span class="fn">clamp</span>(<span class="nm">0.0</span>, <span class="nm">1.0</span>)
+  curr_feat = curr_feat.<span class="fn">clone</span>()
+  curr_feat[:, :<span class="nm">2</span>] = new_xy`,
+  tags:['no_grad','gradient control','recursive']
+},
+
+'pred:soft_rollout': {
+  title:'Differentiable Soft Rollout (WITH gradients)',
+  badge:'PREDICTIVE · predictive.py',
+  color:'var(--pred)',
+  desc:'Constructs T=H+1 future node tensor snapshots. Unlike the internal GRU position update (which uses no_grad), this rollout IS differentiable so GRU parameters also receive gradients through the GNN → policy loss path. cv obstacles move via softmax(logits_h)@delta_table. rw obstacles maintain current position. Boundary rebounds: detects proposal outside [0,1] and flips velocity component. Produces <code>all_node_tensors</code> stack of future world states.',
+  io:[['IN','logits [B,M,H,5], node_tensors [B,N,7], cv_mask [B,M]'],['OUT','all_node_tensors [T=H+1, B, N, 7]']],
+  code:`<span class="kw">for</span> h <span class="kw">in</span> range(self.horizon):
+  probs_h   = F.<span class="fn">softmax</span>(logits[:,:,h,:], dim=-<span class="nm">1</span>)
+  exp_delta = (probs_h @ delta_table) * cv_mask_f
+  proposal  = curr_pos + curr_vel           <span class="cm"># rw physics</span>
+  hit_x = (proposal[:,:,<span class="nm">0</span>]<=<span class="nm">0</span>) | (proposal[:,:,<span class="nm">0</span>]>=<span class="nm">1</span>)
+  next_vel  = torch.<span class="fn">where</span>(hit_x, -curr_vel[:,:<span class="nm">0</span>], ...)
+  next_xy   = torch.<span class="fn">where</span>(cv_mask_f><span class="nm">0</span>, curr_pos+exp_delta, ...)`,
+  tags:['differentiable','soft rollout','world model']
+},
+
+'pred:knn_graph': {
+  title:'_build_knn_graph() — Future Frame Graphs',
+  badge:'PREDICTIVE · predictive.py',
+  color:'var(--pred)',
+  desc:'Builds KNN graph topology from current frame and reuses it for all future frames (only spatial distances change). Computes pairwise L1 distance on node positions, masks invalid nodes with 1e9, finds top-k nearest neighbours (k = difficulty.knn_k). Classifies edges into 4 types: AGENT_GOAL, AGENT_OBS, OBS_OBS, SELF. One-hot encodes types + spatial distance → edge_feat [5 dims]. Updates space_dist for each future frame position while keeping topology fixed.',
+  io:[['IN','all_node_tensors [T,B,N,7], node_counts [B], knn_k'],['OUT','edge_feat [T·B,E,5] · node_mask · edge_valid · src_all · dst_all']],
+  code:`dists = (pos.unsqueeze(<span class="nm">2</span>) - pos.unsqueeze(<span class="nm">1</span>)).<span class="fn">abs</span>().<span class="fn">sum</span>(-<span class="nm">1</span>)
+dists.<span class="fn">masked_fill_</span>(invalid | eye, <span class="nm">1e9</span>)
+_, knn_dst = dists.<span class="fn">topk</span>(k, dim=-<span class="nm">1</span>, largest=<span class="kw">False</span>)
+<span class="cm"># edge type classification via src/dst indices</span>
+<span class="cm"># update space_dist per future frame:</span>
+all_ef_tb[:,:,:,<span class="nm">4</span>:<span class="nm">5</span>] = space_dist_all * edge_valid`,
+  tags:['predictive.py','KNN','@staticmethod']
+},
+
+'pred:node_encoder_pred': {
+  title:'NodeEncoder — Shared, runs over T·B frames',
+  badge:'SHARED · gnn.py (used by PredictivePolicy)',
+  color:'var(--shared)',
+  desc:'The same NodeEncoder used by GNNPolicy is reused here, but it is called on T·B batched frames simultaneously. Three type-specific branches (agent, goal, obstacle) project raw node features into the latent space, with invalid obstacle nodes zeroed by the obs_mask. This is an important shared module — changes in NodeEncoder affect both policies.',
+  io:[['IN','batched_nodes [T·B,N,7], batched_counts [T·B]'],['OUT','node_h [T·B,N,D]']],
+  code:`node_h   = self.<span class="fn">node_encoder</span>(batched_nodes, batched_counts)
+step_ids = arange(T).<span class="fn">repeat_interleave</span>(B)
+node_h   = node_h + self.<span class="fn">step_embed</span>(step_ids).unsqueeze(<span class="nm">1</span>)`,
+  tags:['SHARED','NodeEncoder','gnn.py']
+},
+
+'pred:step_embed': {
+  title:'Temporal Step Embedding',
+  badge:'PREDICTIVE · predictive.py',
+  color:'var(--pred)',
+  desc:'An <code>nn.Embedding(horizon+1, latent_dim)</code> maps each frame\'s timestep index (0=current, 1=next, …, H=furthest) into the latent space. Added directly to node_h before GNN message passing. This is essential: without it, the GNN processing T frames simultaneously cannot distinguish which frame it is processing, leading to information collapse across time.',
+  io:[['IN','step_ids [T·B] — integer timestep indices'],['OUT','step_embed [T·B,1,D] → broadcast-added to node_h']],
+  code:`self.step_embed = nn.<span class="fn">Embedding</span>(self.horizon+<span class="nm">1</span>, latent_dim)
+<span class="cm"># during forward:</span>
+step_ids = arange(T).<span class="fn">repeat_interleave</span>(B) <span class="cm"># [T·B]</span>
+node_h   = node_h + self.<span class="fn">step_embed</span>(step_ids).<span class="fn">unsqueeze</span>(<span class="nm">1</span>)`,
+  tags:['temporal','embedding','Predictive-unique']
+},
+
+'pred:gnn_layers_pred': {
+  title:'EdgeAwareGNN — Shared, runs over T·B frames',
+  badge:'SHARED · gnn.py (used by PredictivePolicy)',
+  color:'var(--shared)',
+  desc:'Identical EdgeAwareGNN layers from GNNPolicy run over the T·B batch. By processing all timestep frames together with the same weights, the GNN is forced to learn features that generalize across temporal positions — the step embedding provides the timestep context. Edge features are provided per-frame so spatial relationships reflect future obstacle positions.',
+  io:[['IN','node_h [T·B,N,D], padded_ef [T·B,E,5], masks, src/dst'],['OUT','node_h [T·B,N,D] updated']],
+  code:`<span class="kw">for</span> layer <span class="kw">in</span> self.gnn_layers:
+  node_h = <span class="fn">layer</span>(node_h, padded_ef,
+                  node_mask_rep, padded_ev,
+                  padded_src, padded_dst)`,
+  tags:['SHARED','EdgeAwareGNN','gnn.py']
+},
+
+'pred:token_extract': {
+  title:'Token Extraction + Gamma Decay',
+  badge:'PREDICTIVE · predictive.py',
+  color:'var(--pred)',
+  desc:'Extracts agent (index 0) and goal (index 1) tokens from each frame\'s node_h, concatenates with projected global features, and projects to frame_latents [T,B,D]. Future frames t=1…H are weighted by γᵗ (γ=0.7), exponentially discounting farther futures. The base (t=0) and weighted future latents are concatenated → final latent [B, D×(H+1)] which gives the actor/critic access to the full temporal horizon.',
+  io:[['IN','node_h_tb [T,B,N,D], global_h [B,G]'],['OUT','latents [B, D×(H+1)]']],
+  code:`frame_tokens = cat([node_h_tb[:,:,<span class="nm">0</span>,:],    <span class="cm"># agent</span>
+                      node_h_tb[:,:,<span class="nm">1</span>,:],    <span class="cm"># goal</span>
+                      global_latent], dim=-<span class="nm">1</span>)
+frame_latents = self.<span class="fn">output_proj</span>(frame_tokens)   <span class="cm"># [T,B,D]</span>
+t_idx      = arange(<span class="nm">1</span>, T).view(T-<span class="nm">1</span>,<span class="nm">1</span>,<span class="nm">1</span>)
+future_env = frame_latents[<span class="nm">1</span>:] * (<span class="nm">0.7</span> ** t_idx)  <span class="cm"># discount</span>
+<span class="kw">return</span> cat([base, future_flat], dim=-<span class="nm">1</span>)`,
+  tags:['gamma decay','temporal fusion']
+},
+
+'pred:actor': {
+  title:'Actor MLP — PredictivePolicy',
+  badge:'PREDICTIVE · predictive.py',
+  color:'var(--pred)',
+  desc:'A deeper actor than GNNPolicy\'s single linear layer. The input dimension is <code>latent_dim × (H+1)</code> — it receives the full concatenated temporal latent including discounted future frames. Two ReLU hidden layers progressively compress to NUM_ACTIONS.',
+  io:[['IN','latents[:,  :actor_input_dim]'],['OUT','logits [B, NUM_ACTIONS]']],
+  code:`a_h1 = max(<span class="nm">128</span>, actor_input_dim // <span class="nm">2</span>)
+a_h2 = max(<span class="nm">64</span>,  a_h1 // <span class="nm">2</span>)
+self.actor = nn.<span class="fn">Sequential</span>(
+    nn.<span class="fn">Linear</span>(actor_input_dim, a_h1), nn.<span class="fn">ReLU</span>(),
+    nn.<span class="fn">Linear</span>(a_h1, a_h2),            nn.<span class="fn">ReLU</span>(),
+    nn.<span class="fn">Linear</span>(a_h2, NUM_ACTIONS))`,
+  tags:['actor','forward_batch']
+},
+
+'pred:critic': {
+  title:'Critic MLP + PopArt — PredictivePolicy',
+  badge:'PREDICTIVE · predictive.py',
+  color:'var(--pred)',
+  desc:'Symmetric to the actor but outputs scalar value. Also consumes the full temporal latent. PopArt normalization is maintained by BasePolicy — the critic\'s last Linear is compensated during EMA updates so normalized value outputs remain invariant to scale changes.',
+  io:[['IN','latents[:, :critic_input_dim]'],['OUT','value [B,1] normalized']],
+  code:`self.critic = nn.<span class="fn">Sequential</span>(
+    nn.<span class="fn">Linear</span>(critic_input_dim, c_h1), nn.<span class="fn">ReLU</span>(),
+    nn.<span class="fn">Linear</span>(c_h1, c_h2),             nn.<span class="fn">ReLU</span>(),
+    nn.<span class="fn">Linear</span>(c_h2, <span class="nm">1</span>))
+
+<span class="kw">def</span> <span class="fn">get_value_last_layer</span>(self):
+    <span class="kw">return</span> self.critic[-<span class="nm">1</span>]  <span class="cm"># for PopArt</span>`,
+  tags:['critic','PopArt','get_value_last_layer']
+},
+
+'pred:out': {
+  title:'PolicyOutput — PredictivePolicy',
+  badge:'OUTPUT',
+  color:'var(--out)',
+  desc:'Standard <code>PolicyOutput</code> dataclass. logits are passed through <code>masked_categorical</code> in act()/evaluate_actions() which fills invalid actions with dtype-min before softmax. Value is raw (denormalized by PopArt). Unlike GNNPolicy, the actor/critic each have their own input dim slice from the temporal latent.',
+  io:[['OUT logits','[B, NUM_ACTIONS] — pre-mask action scores'],['OUT value','[B,1] — raw state value after PopArt denorm']],
+  code:`<span class="kw">def</span> <span class="fn">forward_batch</span>(self, observations):
+  latents = self.<span class="fn">encode</span>(observations)
+  <span class="kw">return</span> PolicyOutput(
+    logits=self.<span class="fn">actor</span>(latents[:, :self.actor_input_dim]),
+    value =self.<span class="fn">critic</span>(latents[:, :self.critic_input_dim]))`,
+  tags:['PolicyOutput','forward_batch']
+},
+
+'pred:aux_loss': {
+  title:'auxiliary_loss() — GRU Obstacle Supervision',
+  badge:'AUXILIARY · training only · predictive.py',
+  color:'var(--aux)',
+  desc:'Supervises the ObstacleGRU with ground-truth obstacle moves from the rollout buffer. Finds non-terminal frame windows of length H+1. Computes ground-truth single-step Δxy from consecutive frames, converts to discrete class 0–4 via <code>_delta_to_class()</code>. CE loss between GRU logits (recursive prediction) and true labels. Distance-weighted: obstacles closer to the agent contribute more (w=1/(1+dist), min 0.25). GRU features are <code>.detach()</code>ed so auxiliary gradients do not propagate back through the shared GNN/NodeEncoder.',
+  io:[['IN','observations list, actions, dones arrays'],['OUT','scalar loss = aux_coef × mean weighted CE']],
+  code:`logits = self.<span class="fn">obstacle_gru</span>(obs_features.<span class="fn">detach</span>(), cv_mask, delta)
+true_label = <span class="fn">_delta_to_class</span>(
+    round(Δxy_norm * grid_size).<span class="fn">clamp</span>(-<span class="nm">1</span>,<span class="nm">1</span>))       <span class="cm"># [H,Bv,M]</span>
+weight = (<span class="nm">1.0</span>/(1.0 + dist)).<span class="fn">clamp</span>(min=<span class="nm">0.25</span>)
+per_ce = F.<span class="fn">cross_entropy</span>(logits_h, true_label, reduction=<span class="st">"none"</span>)
+<span class="kw">return</span> self.aux_coef * (per_ce * cv_mask * weight).<span class="fn">mean</span>()`,
+  tags:['aux_coef','CE loss','detach','cv obstacles only']
+},
+
+// ───────── GNN ────────────────────────────────────────────────────────────
+'gnn:obs_input': {
+  title:'Raw Observation Batch',
+  badge:'INPUT · GNNPolicy',
+  color:'var(--shared)',
+  desc:'GNNPolicy requires <code>node_features</code>, <code>edge_index</code> (precomputed KNN from the environment), <code>global_features</code>, and <code>node_count</code>. Unlike PredictivePolicy it does not need <code>difficulty</code> or <code>grid_size</code> as it uses the precomputed edge_index rather than building its own KNN graph.',
+  io:[['IN','list of dicts, length=B'],['OUT','batched tensors on device']],
+  code:`node_tensors    = stack([obs[<span class="st">"node_features"</span>] ...])  <span class="cm"># [B,N,7]</span>
+edge_index_raw  = stack([obs[<span class="st">"edge_index"</span>] ...])     <span class="cm"># [B,2,E]</span>
+global_h        = stack([obs[<span class="st">"global_features"</span>] ...]) <span class="cm"># [B,G]</span>`,
+  tags:['gnn.py','encode()']
+},
+
+'gnn:build_graph': {
+  title:'build_graph_from_obs()',
+  badge:'SHARED · gnn.py',
+  color:'var(--shared)',
+  desc:'Takes precomputed edge_index from the environment and enriches it with edge semantics. Appends N self-loops. Classifies each edge type based on src/dst indices: agent=0, goal=1, obs≥2. Computes spatial L1 distance between node positions (normalized /2). Applies triple validity mask: knn_valid & src_node_valid & dst_node_valid. Returns edge_feat [B,E,5] = [4 type one-hot | spatial_dist].',
+  io:[['IN','node_tensors [B,N,7], node_counts [B], edge_index_raw [B,2,E]'],['OUT','edge_feat [B,E,5] · node_mask · edge_valid · src_c · dst_c']],
+  code:`is_self = src == dst
+is_ag   = (src==<span class="nm">0</span>&dst==<span class="nm">1</span>) | (src==<span class="nm">1</span>&dst==<span class="nm">0</span>)
+is_ao   = (src∈{<span class="nm">0</span>,<span class="nm">1</span>} | dst∈{<span class="nm">0</span>,<span class="nm">1</span>}) & ~is_ag & ~is_self
+<span class="cm"># one-hot [B,E,4] + spatial_dist [B,E,1]</span>
+edge_feat = cat([type_onehot, space_dist], dim=<span class="nm">2</span>)`,
+  tags:['SHARED','gnn.py','EDGE_FEATURE_DIM=5']
+},
+
+'gnn:node_encoder': {
+  title:'NodeEncoder — Type-Specific Projection',
+  badge:'SHARED · gnn.py',
+  color:'var(--shared)',
+  desc:'Three separate Linear+Dropout+LN+ReLU branches for agent, goal, and obstacle nodes. By having separate weights per role, the model learns different inductive biases: e.g., goal features may emphasise distance, agent features emphasise velocity, obs features emphasise collision risk. Invalid obstacle nodes (beyond node_count−2) are explicitly zeroed to prevent contamination of valid nodes via attention.',
+  io:[['IN','node_tensors [B,N,7], node_counts [B]'],['OUT','node_h [B,N,D]']],
+  code:`agent_h = self.<span class="fn">agent_proj</span>(node_tensors[:,<span class="nm">0</span>,:])  <span class="cm"># [B,D]</span>
+goal_h  = self.<span class="fn">goal_proj</span>(node_tensors[:,<span class="nm">1</span>,:])   <span class="cm"># [B,D]</span>
+obs_h   = self.<span class="fn">obs_proj</span>(node_tensors[:,<span class="nm">2</span>:,:])  <span class="cm"># [B,M,D]</span>
+obs_h  *= valid_mask.unsqueeze(-<span class="nm">1</span>)             <span class="cm"># zero invalid</span>
+<span class="kw">return</span> cat([agent_h, goal_h, obs_h], dim=<span class="nm">1</span>)`,
+  tags:['SHARED','NodeEncoder','separate projections']
+},
+
+'gnn:attn': {
+  title:'EdgeAwareGNN — Attention + Edge Bias',
+  badge:'SHARED · gnn.py',
+  color:'var(--shared)',
+  desc:'Vectorized implementation avoiding Python loops over heads. Edge biases are computed as Linear(5→num_heads, no_bias) then scattered into the flat N² attention grid using <code>scatter_add_</code> with index dst*N+src. This is more efficient than iterating heads and correctly accumulates multiple edges between the same node pair. Padding keys are masked with dtype.min before softmax, and any NaN (all-masked rows) is replaced with 0 via <code>nan_to_num</code>.',
+  io:[['IN','x [B,N,D], edge_feat [B,E,5], node_mask, edge_valid, src_c, dst_c'],['OUT','updated attention output [B,N,D]']],
+  code:`attn = Q @ Kᵀ * scale                       <span class="cm"># [B,nh,N,N]</span>
+bias = self.<span class="fn">edge_bias</span>(edge_feat).permute(<span class="nm">0</span>,<span class="nm">2</span>,<span class="nm">1</span>) <span class="cm"># [B,nh,E]</span>
+bias *= edge_valid.unsqueeze(<span class="nm">1</span>)
+flat_idx = (dst_c*N + src_c).unsqueeze(<span class="nm">1</span>)
+bias_flat.<span class="fn">scatter_add_</span>(<span class="nm">2</span>, flat_idx, bias)
+attn = attn + bias_flat.reshape(B,nh,N,N)
+attn.<span class="fn">masked_fill_</span>(~node_mask, finfo.min)
+attn = softmax(attn).<span class="fn">nan_to_num</span>(<span class="nm">0.0</span>)`,
+  tags:['scatter_add','edge bias','vectorized']
+},
+
+'gnn:ffn': {
+  title:'EdgeAwareGNN — FFN + Residual + LN',
+  badge:'SHARED · gnn.py',
+  color:'var(--shared)',
+  desc:'Standard post-attention transformer block. Two LayerNorm residual stages: first wraps the attention output + projection, second wraps a 2× expansion FFN with ReLU and Dropout. Final step zeros out padding node representations (which may have been contaminated during attention despite masking), ensuring clean downstream token extraction.',
+  io:[['IN','attn output [B,N,D]'],['OUT','x [B,N,D] cleaned']],
+  code:`x = self.<span class="fn">norm1</span>(x + self.<span class="fn">out</span>(attn@V))     <span class="cm"># residual 1</span>
+x = self.<span class="fn">norm2</span>(x + self.<span class="fn">ffn</span>(x))           <span class="cm"># residual 2</span>
+<span class="cm"># FFN: Linear(D→2D)→ReLU→Dropout→Linear(2D→D)</span>
+<span class="kw">return</span> x * node_mask.unsqueeze(-<span class="nm">1</span>).<span class="fn">float</span>() <span class="cm"># zero padding</span>`,
+  tags:['FFN','LayerNorm','residual','dropout']
+},
+
+'gnn:token_extract': {
+  title:'Token Extraction — Agent + Goal + Global',
+  badge:'GNNPolicy · gnn.py',
+  color:'var(--gnn)',
+  desc:'Extracts the two "task-defining" node tokens after message passing. Node 0 (agent) carries information aggregated from its neighbourhood. Node 1 (goal) similarly has absorbed context. These are concatenated with projected global features (not a graph node — computed separately) and fed to output_proj for final compression.',
+  io:[['IN','node_h [B,N,D] after GNN'],['OUT','[B, 3D] concatenated features']],
+  code:`agent_latent = node_h[:, <span class="nm">0</span>, :]   <span class="cm"># [B, D]</span>
+goal_latent  = node_h[:, <span class="nm">1</span>, :]   <span class="cm"># [B, D]</span>
+global_proj  = self.<span class="fn">global_proj</span>(global_h)  <span class="cm"># [B, D]</span>
+<span class="kw">return</span> self.<span class="fn">output_proj</span>(
+    cat([agent_latent, goal_latent, global_proj], dim=-<span class="nm">1</span>))`,
+  tags:['GNNPolicy','token extraction']
+},
+
+'gnn:policy_head': {
+  title:'policy_head — GNNPolicy',
+  badge:'GNNPolicy · gnn.py',
+  color:'var(--gnn)',
+  desc:'Single linear layer mapping the compressed latent to action logits. Simpler than the predictive actor — no temporal latent so a single layer is sufficient. Used in both <code>forward_batch</code> and <code>forward_from_latent</code>.',
+  io:[['IN','latent [B,D]'],['OUT','logits [B,NUM_ACTIONS]']],
+  code:`self.policy_head = nn.<span class="fn">Linear</span>(latent_dim, NUM_ACTIONS)
+
+<span class="kw">def</span> <span class="fn">forward_from_latent</span>(self, latents):
+    <span class="kw">return</span> PolicyOutput(
+        logits=self.<span class="fn">policy_head</span>(latents),
+        value =self.<span class="fn">value_head</span>(latents))`,
+  tags:['reactive','single timestep']
+},
+
+'gnn:value_head': {
+  title:'value_head + PopArt — GNNPolicy',
+  badge:'GNNPolicy · gnn.py',
+  color:'var(--gnn)',
+  desc:'Single linear layer producing normalized scalar value. <code>get_value_last_layer()</code> returns this layer directly so PopArt can compensate its weights during EMA updates. The value is denormalized before being returned to the PPO loop.',
+  io:[['IN','latent [B,D]'],['OUT','value_norm [B,1]']],
+  code:`self.value_head = nn.<span class="fn">Linear</span>(latent_dim, <span class="nm">1</span>)
+
+<span class="kw">def</span> <span class="fn">get_value_last_layer</span>(self) -> nn.Linear:
+    <span class="kw">return</span> self.value_head  <span class="cm"># for PopArt compensation</span>`,
+  tags:['PopArt','value normalization']
+},
+
+'gnn:out': {
+  title:'PolicyOutput — GNNPolicy',
+  badge:'OUTPUT',
+  color:'var(--out)',
+  desc:'Reactive single-timestep output. No auxiliary loss (returns zero from BasePolicy default). The policy acts purely on current observation — no future prediction.',
+  io:[['OUT logits','[B, NUM_ACTIONS]'],['OUT value','[B,1] normalized']],
+  code:`<span class="kw">def</span> <span class="fn">forward_batch</span>(self, observations):
+    latent = self.<span class="fn">encode</span>(observations)
+    <span class="kw">return</span> PolicyOutput(
+        logits=self.<span class="fn">policy_head</span>(latent),
+        value =self.<span class="fn">value_head</span>(latent))`,
+  tags:['PolicyOutput','no aux loss']
+},
+
+// ───────── MLP ────────────────────────────────────────────────────────────
+'mlp:obs_input': {
+  title:'Raw Observation Batch — MLPPolicy',
+  badge:'INPUT · MLPPolicy',
+  color:'var(--mlp)',
+  desc:'MLPPolicy takes the same observation dict format but ignores <code>edge_index</code> entirely — graph structure is discarded. The <code>action_mask</code> is included in the flattened input (unlike GNN/Predictive where it is applied externally). Node ordering must be deterministic for the flat representation to be meaningful.',
+  io:[['IN','list of dicts, length=B'],['IGNORED','edge_index (graph structure)'],['IN','node_features [N,7] · global [G] · action_mask [A]']],
+  code:`<span class="cm"># MLPPolicy only uses these fields:</span>
+obs[<span class="st">"node_features"</span>]   <span class="cm"># [N, 7]</span>
+obs[<span class="st">"global_features"</span>] <span class="cm"># [G]</span>
+obs[<span class="st">"action_mask"</span>]     <span class="cm"># [NUM_ACTIONS]</span>
+<span class="cm"># edge_index is silently ignored</span>`,
+  tags:['mlp.py','flat baseline']
+},
+
+'mlp:flatten': {
+  title:'flatten_batch() → flatten_observation()',
+  badge:'SHARED UTILITY · common.py',
+  color:'var(--shared)',
+  desc:'Calls <code>flatten_observation()</code> per sample, which pads node_features to <code>max_nodes</code> rows then concatenates with global_features and action_mask. This destroys permutation invariance: node ordering is baked into the learned weights. The input_dim is statically determined: <code>max_nodes × NODE_FEATURE_DIM + GLOBAL_FEATURE_DIM + NUM_ACTIONS</code>. All samples must use the same max_nodes at inference.',
+  io:[['IN','observations list, max_nodes, device'],['OUT','flat tensor [B, max_nodes·7 + G + A]']],
+  code:`<span class="kw">def</span> <span class="fn">flatten_batch</span>(observations, max_nodes, device):
+    flat = [<span class="fn">flatten_observation</span>(obs, max_nodes=max_nodes)
+            <span class="kw">for</span> obs <span class="kw">in</span> observations]
+    <span class="kw">return</span> as_tensor(asarray(flat), dtype=float32)`,
+  tags:['common.py','flatten_observation','no graph']
+},
+
+'mlp:mlpblock': {
+  title:'MLPBlock — Shared Trunk',
+  badge:'SHARED · common.py',
+  color:'var(--shared)',
+  desc:'Two-layer MLP with Tanh activations and LayerNorm between layers. Used as the shared encoder for MLPPolicy. Hidden_dim is the primary capacity lever — typically set large (128–1024) to compensate for the lack of graph inductive bias. Note the MLPBlock in common.py uses Tanh (not ReLU), which provides bounded activations suitable for flat high-dimensional inputs.',
+  io:[['IN','flat [B, input_dim]'],['OUT','encoded [B, hidden_dim]']],
+  code:`self.layers = nn.<span class="fn">Sequential</span>(
+    nn.<span class="fn">Linear</span>(input_dim, hidden_dim),
+    nn.<span class="fn">Tanh</span>(),
+    nn.<span class="fn">LayerNorm</span>(hidden_dim),
+    nn.<span class="fn">Linear</span>(hidden_dim, hidden_dim),
+    nn.<span class="fn">Tanh</span>())`,
+  tags:['SHARED','Tanh','LayerNorm','common.py']
+},
+
+'mlp:policy_head': {
+  title:'Policy Head — MLPPolicy',
+  badge:'MLPPolicy · mlp.py',
+  color:'var(--mlp)',
+  desc:'Two-layer MLP with an intermediate hidden layer. The extra hidden layer (compared to GNNPolicy\'s single Linear) provides more capacity to map the flat latent to a good action distribution. Uses Tanh rather than ReLU for bounded intermediate activations.',
+  io:[['IN','encoded [B,D]'],['OUT','logits [B,NUM_ACTIONS]']],
+  code:`self.policy_head = nn.<span class="fn">Sequential</span>(
+    nn.<span class="fn">Linear</span>(hidden_dim, hidden_dim),
+    nn.<span class="fn">Tanh</span>(),
+    nn.<span class="fn">Linear</span>(hidden_dim, NUM_ACTIONS))`,
+  tags:['mlp.py','actor']
+},
+
+'mlp:value_head': {
+  title:'High-Capacity Value Head — MLPPolicy',
+  badge:'MLPPolicy · mlp.py',
+  color:'var(--mlp)',
+  desc:'Three-layer design with an additional LayerNorm before the output linear. The LayerNorm stabilizes value training by reducing covariate shift in the high-dimensional flat state space, which is particularly important when the shared encoder must also serve the policy head. <code>get_value_last_layer()</code> returns <code>value_head[-1]</code> (the final Linear) for PopArt compensation.',
+  io:[['IN','encoded [B,D]'],['OUT','value_norm [B,1]']],
+  code:`self.value_head = nn.<span class="fn">Sequential</span>(
+    nn.<span class="fn">Linear</span>(hidden_dim, hidden_dim),
+    nn.<span class="fn">Tanh</span>(),
+    nn.<span class="fn">LayerNorm</span>(hidden_dim),  <span class="cm"># stabilizes value training</span>
+    nn.<span class="fn">Linear</span>(hidden_dim, <span class="nm">1</span>))  <span class="cm"># ← PopArt target</span>`,
+  tags:['mlp.py','LayerNorm','PopArt']
+},
+
+'mlp:out': {
+  title:'PolicyOutput — MLPPolicy',
+  badge:'OUTPUT',
+  color:'var(--out)',
+  desc:'Flat dense baseline output. No auxiliary loss, no graph reasoning, no temporal prediction. Simplest of the three policies. The action_mask was included in the flattened input (learned), but <code>masked_categorical</code> is still applied in <code>act()</code> to prevent sampling truly invalid actions.',
+  io:[['OUT logits','[B, NUM_ACTIONS]'],['OUT value','[B,1] normalized']],
+  code:`<span class="kw">def</span> <span class="fn">forward_batch</span>(self, observations):
+    encoded = self.<span class="fn">encoder</span>(
+        <span class="fn">flatten_batch</span>(observations,
+                      max_nodes=self.max_nodes,
+                      device=self.device))
+    <span class="kw">return</span> PolicyOutput(
+        logits=self.<span class="fn">policy_head</span>(encoded),
+        value =self.<span class="fn">value_head</span>(encoded))`,
+  tags:['flat','no aux','no graph']
+},
+
+// ───────── SHARED tab ─────────────────────────────────────────────────────
+'sh:basepolicy': {
+  title:'BasePolicy (nn.Module)',
+  badge:'ABSTRACT BASE · common.py',
+  color:'var(--shared)',
+  desc:'Abstract base inherited by all three policies. Manages PopArt running statistics (μ,σ) as registered buffers. Provides act(), evaluate_actions(), evaluate_actions_from_latent() for the PPO loop. PopArt weight compensation: when (μ,σ) are updated, the last value Linear is adjusted to preserve its raw output — W←(σ_old/σ_new)W, b←(σ_old·b+μ_old−μ_new)/σ_new.',
+  io:[['BUFFERS','popart_mu [1], popart_sigma [1]'],['ABSTRACT','forward_batch(), forward_from_latent(), get_value_last_layer()']],
+  code:`<span class="kw">def</span> <span class="fn">popart_update</span>(self, targets_raw, beta, eps, min_sigma):
+  new_mu    = beta*old_mu    + (<span class="nm">1</span>-beta)*batch_mu
+  new_sigma = beta*old_sigma + (<span class="nm">1</span>-beta)*batch_sigma
+  scale = old_sigma / new_sigma
+  layer.weight.data.<span class="fn">mul_</span>(scale)         <span class="cm"># compensate W</span>
+  layer.bias.data.<span class="fn">copy_</span>((σ_old*b + μ_old - μ_new)/σ_new)`,
+  tags:['common.py','PopArt','abstract','EMA']
+},
+
+'sh:node_encoder': {
+  title:'NodeEncoder',
+  badge:'SHARED · gnn.py',
+  color:'var(--shared)',
+  desc:'Three separate projection branches for three semantic roles: agent (node 0), goal (node 1), and all obstacle nodes (2+). Each branch is an independent Linear+Dropout+LayerNorm+ReLU. Separate weights allow the model to learn different latent geometries per role. Invalid obstacles are zeroed, not masked out of the batch dimension, so shapes remain uniform. Used by GNNPolicy and PredictivePolicy.',
+  io:[['IN','node_tensors [B,N,7], node_counts [B]'],['OUT','node_h [B,N,D]']],
+  code:`agent_h = self.<span class="fn">agent_proj</span>(node_tensors[:,<span class="nm">0</span>,:]).<span class="fn">unsqueeze</span>(<span class="nm">1</span>)
+goal_h  = self.<span class="fn">goal_proj</span>(node_tensors[:,<span class="nm">1</span>,:]).<span class="fn">unsqueeze</span>(<span class="nm">1</span>)
+obs_h   = self.<span class="fn">obs_proj</span>(node_tensors[:,<span class="nm">2</span>:,:])
+obs_h  *= valid_mask.unsqueeze(-<span class="nm">1</span>)
+<span class="kw">return</span> cat([agent_h, goal_h, obs_h], dim=<span class="nm">1</span>)`,
+  tags:['SHARED GNN+Pred','separate branches']
+},
+
+'sh:edge_gnn': {
+  title:'EdgeAwareGNN',
+  badge:'SHARED · gnn.py',
+  color:'var(--shared)',
+  desc:'Graph Transformer block combining self-attention with explicit edge type biases. Key design: edge biases are added to the full [B,nh,N,N] attention matrix via vectorized scatter_add (no Python loops). Handles variable-size graphs cleanly via node_mask. Padding nodes are zeroed after each layer. Used by both GNNPolicy and PredictivePolicy (the latter applies it to T·B frames simultaneously).',
+  io:[['IN','x [B,N,D], edge_feat [B,E,5], node_mask [B,N], edge_valid [B,E], src_c [B,E], dst_c [B,E]'],['OUT','x [B,N,D]']],
+  code:`flat_idx = (dst_c*N + src_c).<span class="fn">unsqueeze</span>(<span class="nm">1</span>).<span class="fn">expand</span>(-<span class="nm">1</span>,nh,-<span class="nm">1</span>)
+bias_flat.<span class="fn">scatter_add_</span>(<span class="nm">2</span>, flat_idx, edge_bias_raw)
+attn = attn + bias_flat.reshape(B,nh,N,N)`,
+  tags:['SHARED GNN+Pred','vectorized','4 edge types']
+},
+
+'sh:build_graph': {
+  title:'build_graph_from_obs()',
+  badge:'SHARED · gnn.py (GNNPolicy only)',
+  color:'var(--shared)',
+  desc:'Graph construction from precomputed environment edge_index. Enriches raw connectivity with semantic edge features. PredictivePolicy uses its own <code>_build_knn_graph()</code> instead, which computes KNN on-the-fly from node positions (needed since future frames have different positions). Both produce edge_feat [B,E,5] in the same format.',
+  io:[['IN','node_tensors [B,N,7], node_counts [B], edge_index_raw [B,2,E], device'],['OUT','ei_full, edge_feat [B,E,5], node_mask, edge_valid, src_c, dst_c']],
+  code:`loop = arange(N).<span class="fn">unsqueeze</span>(<span class="nm">0</span>).<span class="fn">expand</span>(B,-<span class="nm">1</span>)
+ei_full = cat([edge_index_raw,
+               stack([loop,loop],dim=<span class="nm">1</span>)], dim=<span class="nm">2</span>)
+<span class="cm"># 4-class one-hot + L1 spatial distance → [B,E,5]</span>`,
+  tags:['gnn.py only','precomputed edge_index']
+},
+
+'sh:mlpblock': {
+  title:'MLPBlock',
+  badge:'SHARED · common.py (MLPPolicy only)',
+  color:'var(--shared)',
+  desc:'Simple two-layer MLP with Tanh activations and LayerNorm normalization between layers. Used only by MLPPolicy. The design choice of Tanh (not ReLU) provides bounded outputs useful for high-dimensional flat inputs where magnitude can vary widely. hidden_dim is the sole architectural hyperparameter — typically scaled up significantly to compensate for no graph bias.',
+  io:[['IN','inputs [B, input_dim]'],['OUT','[B, hidden_dim]']],
+  code:`nn.<span class="fn">Sequential</span>(
+  nn.<span class="fn">Linear</span>(input_dim, hidden_dim),
+  nn.<span class="fn">Tanh</span>(),
+  nn.<span class="fn">LayerNorm</span>(hidden_dim),
+  nn.<span class="fn">Linear</span>(hidden_dim, hidden_dim),
+  nn.<span class="fn">Tanh</span>())`,
+  tags:['common.py','MLPPolicy only','Tanh']
+},
+
+'sh:flatten_batch': {
+  title:'flatten_batch() / flatten_observation()',
+  badge:'SHARED UTILITY · common.py',
+  color:'var(--shared)',
+  desc:'Serializes a variable-length graph observation into a fixed-size flat vector. Delegates to <code>flatten_observation()</code> from <code>dynamic_nav.observation</code>. Pads node array to max_nodes, concatenates global_features and action_mask. Result is a numpy array converted to float32 tensor. This is the operation that loses all graph structure information.',
+  io:[['IN','observations list, max_nodes, device'],['OUT','[B, max_nodes·7 + G + A]']],
+  code:`flat = [<span class="fn">flatten_observation</span>(obs, max_nodes=max_nodes)
+        <span class="kw">for</span> obs <span class="kw">in</span> observations]
+<span class="kw">return</span> as_tensor(asarray(flat),
+                  dtype=float32, device=device)`,
+  tags:['common.py','MLPPolicy only']
+},
+
+'sh:popart': {
+  title:'PopArt — Adaptive Value Normalization',
+  badge:'SHARED · common.py · BasePolicy',
+  color:'var(--shared)',
+  desc:'Maintains running exponential moving average of return statistics (μ,σ). When statistics change, compensates the last value Linear so that its raw scalar output (in normalized space) stays the same while the mapping from normalized→raw updates. This prevents sudden shifts in value targets from destabilizing training. All three policies inherit this via BasePolicy. The EMA rate β, floor eps, and min_sigma are controlled by the PPO loop.',
+  io:[['BUFFERS','popart_mu [1], popart_sigma [1]'],['UPDATES','W, b of get_value_last_layer()']],
+  code:`scale = old_sigma / new_sigma           <span class="cm"># [1]</span>
+layer.weight.data.<span class="fn">mul_</span>(scale)         <span class="cm"># W ← W · scale</span>
+layer.bias.data.<span class="fn">copy_</span>(
+    (old_sigma*b + old_mu - new_mu) / new_sigma)`,
+  tags:['common.py','EMA','normalization','all policies']
+},
+
+'sh:masked_cat': {
+  title:'masked_categorical()',
+  badge:'SHARED UTILITY · common.py',
+  color:'var(--shared)',
+  desc:'AMP-safe action masking. Uses dtype-specific minimum values: fp16≈−65504, fp32=−1e9, avoiding fp16 overflow that occurs with naive −1e9. Masked logits are passed to <code>torch.distributions.Categorical</code> for sampling (in act()) or log_prob/entropy computation (in evaluate_actions()). Used identically by all three policies.',
+  io:[['IN','logits [B,A], action_mask [B,A]'],['OUT','Categorical distribution']],
+  code:`<span class="kw">if</span> logits.dtype <span class="kw">in</span> (float16, bfloat16):
+    mask_value = finfo(logits.dtype).min  <span class="cm"># ~-65504</span>
+<span class="kw">else</span>:
+    mask_value = -<span class="nm">1e9</span>
+masked = logits.<span class="fn">masked_fill</span>(action_mask<=<span class="nm">0</span>, mask_value)
+<span class="kw">return</span> Categorical(logits=masked)`,
+  tags:['common.py','AMP safe','all policies']
+},
+
+'sh:obstacle_gru': {
+  title:'ObstacleGRU — Predictive-Unique',
+  badge:'UNIQUE · predictive.py',
+  color:'var(--pred)',
+  desc:'Per-obstacle recurrent predictor unique to PredictivePolicy. Obstacles are processed in parallel by flattening into the batch dimension. Recursive single-step prediction with position feedback: the predicted (or updated) position is fed back as input for step h+1, enabling boundary rebound prediction. Key gradient design: internal position update uses <code>no_grad</code> to prevent H-step gradient explosion; external soft rollout in encode() is fully differentiable so GRU parameters still learn from policy gradient.',
+  io:[['IN','obs_features [B,M,7], cv_mask [B,M], delta_table [5,2]'],['OUT','logits [B,M,H,5]']],
+  code:`<span class="kw">for</span> _ <span class="kw">in</span> range(self.horizon):
+    x_input = self.<span class="fn">input_proj</span>(curr_feat)
+    h       = self.<span class="fn">norm</span>(self.<span class="fn">gru_cell</span>(x_input, h))
+    logits  = self.<span class="fn">move_head</span>(h)         <span class="cm"># [B·M, 5]</span>
+    <span class="kw">with</span> torch.<span class="fn">no_grad</span>():
+        <span class="cm"># update curr_feat position for next step</span>
+        new_xy = (curr_feat[:, :<span class="nm">2</span>]
+                  + F.<span class="fn">softmax</span>(logits,-<span class="nm">1</span>) @ delta_table
+                  ).<span class="fn">clamp</span>(<span class="nm">0</span>, <span class="nm">1</span>)`,
+  tags:['predictive.py','GRUCell','no_grad','recursive']
+}
+};
+
+// ── State ────────────────────────────────────────────────────────────────────
+let activeKey = null;
+
+function select(tab, key) {
+  const k = `${tab}:${key}`;
+  // deactivate previous
+  if(activeKey) {
+    const prev = document.querySelector(`.node[data-key="${activeKey}"]`);
+    if(prev) prev.classList.remove('active-node');
+  }
+  activeKey = k;
+  const node = document.querySelector(`.node[data-key="${k}"]`);
+  if(node) node.classList.add('active-node');
+
+  const item = DB[k];
+  if(!item) return;
+
+  document.getElementById('ins-badge').textContent = item.badge;
+  document.getElementById('ins-badge').style.background = item.color + '33';
+  document.getElementById('ins-badge').style.color = item.color;
+  document.getElementById('ins-badge').style.border = '1px solid ' + item.color + '66';
+
+  let ioHtml = '';
+  if(item.io) {
+    ioHtml = `<div class="ins-section">
+      <div class="ins-section-title">I / O</div>
+      <div class="ins-io">` +
+      item.io.map(([lbl,val]) =>
+        `<div class="ins-io-row">
+          <div class="ins-io-label" style="color:${item.color}">${lbl}</div>
+          <div class="ins-io-val">${val}</div>
+        </div>`).join('') +
+      `</div></div>`;
+  }
+
+  let tagsHtml = '';
+  if(item.tags) {
+    tagsHtml = `<div class="ins-section">
+      <div class="ins-section-title">Source / Tags</div>
+      <div class="ins-tags">` +
+      item.tags.map(t => `<span class="ins-tag">${t}</span>`).join('') +
+      `</div></div>`;
+  }
+
+  document.getElementById('ins-body').innerHTML = `
+    <div class="ins-content">
+      <div class="ins-section">
+        <div class="ins-section-title">Description</div>
+        <div class="ins-desc">${item.desc}</div>
+      </div>
+      ${ioHtml}
+      <div class="ins-section">
+        <div class="ins-section-title">Core Implementation</div>
+        <pre class="code-block">${item.code}</pre>
+      </div>
+      ${tagsHtml}
+    </div>`;
+}
+
+// assign data-key to nodes
+document.querySelectorAll('.node[onclick]').forEach(n => {
+  const m = n.getAttribute('onclick').match(/select\('(\w+)','(\w+)'\)/);
+  if(m) n.dataset.key = `${m[1]}:${m[2]}`;
+});
+
+function switchTab(t) {
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(el => el.classList.remove('active'));
+  document.querySelector(`.tab[data-tab="${t}"]`).classList.add('active');
+  document.getElementById(`panel-${t}`).classList.add('active');
+  // reset inspector
+  activeKey = null;
+  document.getElementById('ins-badge').textContent = 'READY';
+  document.getElementById('ins-badge').style.background = '';
+  document.getElementById('ins-badge').style.color = '';
+  document.getElementById('ins-badge').style.border = '';
+  document.getElementById('ins-body').innerHTML = `<div class="ins-empty">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35M11 8v6M8 11h6"/></svg>
+    Click any module in the<br>diagram to inspect it
+  </div>`;
+}
+</script>
+</body>
+</html>
