@@ -4,6 +4,10 @@ Course project scaffold for a graph-based predictive agent in dynamic environmen
 This repository includes:
 
 - A reproducible grid-world environment with moving obstacles and three fixed difficulty tiers
+  - **Easy**: 8×8 grid, 3 obstacles, 30 max steps, knn_k=3
+  - **Medium**: 10×10 grid, 6 obstacles, 45 max steps, knn_k=4
+  - **Hard**: 12×12 grid, 10 obstacles, 60 max steps, knn_k=6
+  - All tiers use max_obstacles=10 for consistent padding
 - A time-expanded A* oracle for path-efficiency evaluation
 - Three PPO-compatible agents: `mlp`, `gnn`, and `predictive`
 - Frozen evaluation-suite generation, evaluation export, and smoke tests
@@ -42,6 +46,7 @@ pip install -r requirements.txt
 
 The code has local fallbacks when `gymnasium` or `torch-geometric` are unavailable, but full project experiments should use the recommended dependencies.
 
+> **Note:** To facilitate reproducibility and ease of experimentation, the entire project is hosted on [**Google Colab**](https://colab.research.google.com/drive/12k9WIKx4LiWfpN34oWvNnonfYmlPtsUK?authuser=1#scrollTo=73964dea). All components of the pipeline—including data processing, model training, evaluation, and visualization—can be executed end-to-end in a single notebook environment without additional configuration.
 ---
 
 ## Two-Phase Workflow
@@ -129,22 +134,28 @@ python3 generate_eval_suite.py --output configs/eval_suite.json --episodes-per-t
 ### Train one model on one tier
 
 ```bash
-python3 train.py --model mlp --difficulty easy --seed 0 --total-timesteps 5000 --checkpoint-dir checkpoints
-python3 train.py --model gnn --difficulty medium --seed 0 --total-timesteps 5000 --checkpoint-dir checkpoints
-python3 train.py --model predictive --difficulty hard --seed 0 --total-timesteps 5000 --checkpoint-dir checkpoints
+python3 train.py --model mlp --difficulty easy --seed 0 --total-timesteps 30000 --checkpoint-dir checkpoints
+python3 train.py --model gnn --difficulty medium --seed 0 --total-timesteps 60000 --checkpoint-dir checkpoints
+python3 train.py --model predictive --difficulty hard --seed 0 --total-timesteps 163840 --checkpoint-dir checkpoints
 ```
+
+Note: Training timesteps are scaled based on model complexity and difficulty. See `configs/experiments.json` for the full hyperparameter configurations used in the main experiments.
 
 ### Train predictive ablation (`H=1`)
 
 ```bash
-python3 train.py --model predictive --difficulty hard --seed 0 --total-timesteps 5000 --horizon 1 --run-name predictive_hard_seed0_h1_ablation
+python3 train.py --model predictive --difficulty hard --seed 0 --total-timesteps 163840 --horizon 1 --run-name predictive_hard_seed0_h1_ablation
 ```
+
+Note: The predictive model uses horizon=3 by default. The ablation study tests horizon=1 to measure the impact of multi-step prediction.
 
 ### Train across all tiers (round-robin curriculum)
 
 ```bash
-python3 train.py --model predictive --difficulty all --seed 0 --total-timesteps 12000 --checkpoint-dir checkpoints
+python3 train.py --model predictive --difficulty all --seed 0 --total-timesteps 200000 --checkpoint-dir checkpoints
 ```
+
+Note: Multi-difficulty training uses a round-robin curriculum that cycles through easy/medium/hard episodes.
 
 ### Evaluate on frozen suite
 
@@ -188,11 +199,28 @@ pytest
 
 Each environment step returns a dictionary with:
 
-- `node_features`: padded array of shape `(max_nodes, 5)` containing `x, y, vx, vy, type_id`
-- `edge_index`: padded directed kNN graph edges
-- `global_features`: normalized timestep progress and remaining budget
-- `action_mask`: legal action indicator for `stay/up/down/left/right`
-- `node_count`: actual number of graph nodes before padding
+- `node_features`: padded array of shape `(max_nodes, 7)` containing `x, y, vx, vy, type_id, is_cv, is_rw`
+  - `x, y`: normalized position coordinates (0-1)
+  - `vx, vy`: normalized velocity components
+  - `type_id`: 0.0 (agent), 1.0 (goal), 2.0 (obstacle)
+  - `is_cv`: 1.0 if constant_velocity obstacle, 0.0 otherwise
+  - `is_rw`: 1.0 if random_walk obstacle, 0.0 otherwise
+- `edge_index`: padded directed kNN graph edges of shape `(2, max_nodes * knn_k)`
+- `global_features`: 10-dimensional vector containing:
+  1. `norm_step`: normalized timestep progress (step / max_steps)
+  2. `norm_node_count`: normalized node count (node_count / max_nodes)
+  3. `norm_min_obs_dist`: normalized distance to nearest obstacle
+  4. `norm_goal_dist`: normalized Manhattan distance to goal
+  5. `prev_dx`: x-direction displacement from previous step
+  6. `prev_dy`: y-direction displacement from previous step
+  7. `goal_dx`: normalized x-direction to goal
+  8. `goal_dy`: normalized y-direction to goal
+  9. `nearest_obs_dx`: normalized x-direction to nearest obstacle
+  10. `nearest_obs_dy`: normalized y-direction to nearest obstacle
+- `action_mask`: legal action indicator for `stay/up/down/left/right` (shape: `(5,)`)
+- `node_count`: actual number of graph nodes before padding (scalar)
+- `grid_size`: size of the grid for the current episode (scalar)
+- `difficulty`: difficulty level string ("easy", "medium", or "hard")
 
 ---
 
@@ -200,8 +228,19 @@ Each environment step returns a dictionary with:
 
 - `MLP-PPO` uses flattened padded observations as the non-structural baseline.
 - `GNN-PPO` uses a lightweight pure-PyTorch graph attention encoder so the repo works even without PyG.
-- `Predictive` adds a GRU world model and optimizes `PPO loss + auxiliary latent prediction loss`.
+- `Predictive` adds a GRU world model with the following design:
+  - **Discrete move prediction**: Predicts 5-class moves (stay/up/down/left/right) instead of continuous coordinates
+  - **Recursive single-step prediction**: GRU predicts one step at a time, feeding predicted positions back for the next step
+  - **Selective prediction**: Only predicts constant_velocity obstacles; random_walk obstacles keep their current position
+  - **Soft rollout**: Uses softmax × delta_table to maintain differentiability for gradient flow
+  - **Auxiliary loss**: Cross-entropy loss over cv obstacles only, with distance-based weighting
+  - **Boundary awareness**: Detects and predicts boundary rebounds at each recursive step
+  - Optimizes `PPO loss + auxiliary prediction loss` with configurable `aux_coef` (default 0.2)
 - The evaluation pipeline uses the same frozen episodes for every method, which is the key fairness guarantee.
+- Training timesteps vary by model complexity:
+  - MLP: 30k-60k steps (scales with difficulty)
+  - GNN: 40k-80k steps (scales with difficulty)
+  - Predictive: 81k-163k steps (uses larger rollout_steps=2048, includes aux warmup)
 - Final write-up scaffolds are under:
   - `reports/final_report_outline.md`
   - `reports/presentation_outline.md`
