@@ -46,7 +46,7 @@ pip install -r requirements.txt
 
 The code has local fallbacks when `gymnasium` or `torch-geometric` are unavailable, but full project experiments should use the recommended dependencies.
 
-> **Note:** To facilitate reproducibility and ease of experimentation, the entire project is hosted on [**Google Colab**](https://colab.research.google.com/drive/12k9WIKx4LiWfpN34oWvNnonfYmlPtsUK?authuser=1#scrollTo=73964dea). All components of the pipeline—including data processing, model training, evaluation, and visualization—can be executed end-to-end in a single notebook environment without additional configuration.
+> **Note:** To facilitate reproducibility and ease of experimentation, the entire project is hosted on [**Google Colab**](https://colab.research.google.com/drive/12k9WIKx4LiWfpN34oWvNnonfYmlPtsUK). All components of the pipeline—including data processing, model training, evaluation, and visualization—can be executed end-to-end in a single notebook environment without additional configuration.
 ---
 
 ## Two-Phase Workflow
